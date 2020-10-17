@@ -5,12 +5,28 @@
  */
 package org.una.tienda.facturacion.dtos;
 
-import org.una.tienda.facturacion.entities.*;
+import java.util.Date;
 
 /**
  *
  * @author colo7
  */
 public class FacturaDTO {
+ 
+    private Long id;
     
+    private int caja;
+ 
+    private double descuentoGeneral;
+
+    private boolean estado;
+    
+   
+    private ClienteDTO clienteId;
+    
+   
+    private Date fechaRegistro;
+
+    
+    private Date fechaModificacion;
 }

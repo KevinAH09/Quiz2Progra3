@@ -5,7 +5,7 @@
  */
 package org.una.tienda.facturacion.dtos;
 
-import org.una.tienda.facturacion.entities.*;
+import java.util.Date;
 
 /**
  *
@@ -13,4 +13,19 @@ import org.una.tienda.facturacion.entities.*;
  */
 public class ClienteDTO {
     
+    private Long id;
+    
+    private String direccion;
+
+    private String email;
+
+    private String nombre;
+    
+    private String telefono;
+ 
+    private boolean estado;
+  
+    private Date fechaRegistro;
+
+    private Date fechaModificacion;
 }
