@@ -13,6 +13,7 @@ import org.una.tienda.facturacion.dtos.ClienteDTO;
  *
  * @author Bosco
  */
+
 public interface IClienteService {
     public Optional<List<ClienteDTO>> findAll();
 
