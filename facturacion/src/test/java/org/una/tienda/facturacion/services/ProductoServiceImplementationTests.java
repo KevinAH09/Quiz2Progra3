@@ -47,6 +47,7 @@ public class ProductoServiceImplementationTests {
         System.out.println(productoEjemplo);
         if (productoEncontrado.isPresent()) {
             ProductoDTO producto = productoEncontrado.get();
+            
             assertEquals(productoEjemplo.getId(), producto.getId());
 
         } else {
@@ -56,9 +57,9 @@ public class ProductoServiceImplementationTests {
 
     @Test
     public void sePuedeModificarUnProductoCorrectamente() {
+        
         productoEjemplo = productoService.create(productoEjemplo);
         productoService.update(productoEjemplo, productoEjemplo.getId());
-
         Optional<ProductoDTO> productoEncontrado = productoService.findById(productoEjemplo.getId());
 
         if (productoEncontrado.isPresent()) {
