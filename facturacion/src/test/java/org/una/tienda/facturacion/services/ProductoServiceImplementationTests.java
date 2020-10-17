@@ -44,7 +44,7 @@ public class ProductoServiceImplementationTests {
         productoEjemplo = productoService.create(productoEjemplo);
 
         Optional<ProductoDTO> productoEncontrado = productoService.findById(productoEjemplo.getId());
-
+        System.out.println(productoEjemplo);
         if (productoEncontrado.isPresent()) {
             ProductoDTO producto = productoEncontrado.get();
             assertEquals(productoEjemplo.getId(), producto.getId());
@@ -56,14 +56,14 @@ public class ProductoServiceImplementationTests {
 
     @Test
     public void sePuedeModificarUnProductoCorrectamente() {
-
-       productoService.update(productoEjemplo, productoEjemplo.getId());
+        productoEjemplo = productoService.create(productoEjemplo);
+        productoService.update(productoEjemplo, productoEjemplo.getId());
 
         Optional<ProductoDTO> productoEncontrado = productoService.findById(productoEjemplo.getId());
 
         if (productoEncontrado.isPresent()) {
             ProductoDTO producto = productoEncontrado.get();
-            Assertions.assertTrue(productoEjemplo.equals(producto));
+            Assertions.assertEquals(productoEjemplo,producto);
 
         } else {
             fail("No se encontro la información en la BD");
