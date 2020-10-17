@@ -28,15 +28,13 @@ public class ClienteServiceImpletationTests {
     @Autowired
     private IClienteService clienteService;
 
-    
-    
     ClienteDTO clienteEjemplo;
-    
+
     ClienteDTO clientePrueba;
 
     @BeforeEach
     public void setup() {
-        clienteEjemplo = new ClienteDTO(){
+        clienteEjemplo = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
                 setEmail("colo7112012@gmail.com");
@@ -45,17 +43,17 @@ public class ClienteServiceImpletationTests {
             }
         };
     }
+
     public void initData() {
-    clientePrueba = new ClienteDTO() {
+        clientePrueba = new ClienteDTO() {
             {
                 setNombre("Kevin");
             }
         };
-        clientePrueba = clienteService.create(clientePrueba);
     }
 
     @Test
-    public void sePuedeCrearUnClienteCorrectamente()  {
+    public void sePuedeCrearUnClienteCorrectamente() {
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
 
@@ -69,8 +67,9 @@ public class ClienteServiceImpletationTests {
             fail("No se encontro la información en la BD");
         }
     }
+
     @Test
-    public void sePuedeModificarUnClienteCorrectamente(){
+    public void sePuedeModificarUnClienteCorrectamente() {
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
         clienteEjemplo.setDireccion("cliente modificado");
@@ -88,20 +87,21 @@ public class ClienteServiceImpletationTests {
             fail("No se encontro la información en la BD");
         }
     }
+
     @Test
-    public void sePuedeEliminarUnClienteCorrectamente()  {
+    public void sePuedeEliminarUnClienteCorrectamente() {
         clienteEjemplo = clienteService.create(clienteEjemplo);
         clienteService.delete(clienteEjemplo.getId());
         Optional<ClienteDTO> productoEncontrado = clienteService.findById(clienteEjemplo.getId());
 
         if (productoEncontrado.isPresent()) {
             fail("El objeto no ha sido eliminado de la BD");
-        }else{
+        } else {
             clienteEjemplo = null;
             Assertions.assertTrue(true);
         }
     }
-    
+
     @Test
     public void seEvitaClienteSinTelefonoDireccionCorreo() {
         initData();
@@ -115,7 +115,9 @@ public class ClienteServiceImpletationTests {
     @AfterEach
     public void tearDown() {
         if (clienteEjemplo != null) {
-            clienteService.delete(clienteEjemplo.getId());
+            if (clienteEjemplo.getId() != null) {
+                clienteService.delete(clienteEjemplo.getId());
+            }
             clienteEjemplo = null;
         }
 
