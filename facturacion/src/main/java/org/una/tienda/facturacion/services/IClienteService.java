@@ -21,4 +21,6 @@ public interface IClienteService {
     public ClienteDTO create(ClienteDTO cliente);
 
     public Optional<ClienteDTO> update(ClienteDTO cliente, Long id);
+    
+    public void delete(Long id);
 }
