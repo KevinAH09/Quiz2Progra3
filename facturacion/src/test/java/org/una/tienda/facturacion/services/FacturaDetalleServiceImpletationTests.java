@@ -121,12 +121,12 @@ public class FacturaDetalleServiceImpletationTests {
         }
     }
     @Test
-    public void sePuedeEliminarUnProductoExistenciaCorrectamente() {
+    public void sePuedeEliminarUnaFacturaDetalleCorrectamente() {
         facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
         facturaDetalleService.delete(facturaDetalleEjemplo.getId());
-        Optional<FacturaDetalleDTO> productoEncontrado = facturaDetalleService.findById(facturaDetalleEjemplo.getId());
+        Optional<FacturaDetalleDTO> facturaDetalleEncontrado = facturaDetalleService.findById(facturaDetalleEjemplo.getId());
 
-        if (productoEncontrado.isPresent()) {
+        if (facturaDetalleEncontrado.isPresent()) {
             fail("El objeto no ha sido eliminado de la BD");
         }else{
             facturaDetalleEjemplo = null;
