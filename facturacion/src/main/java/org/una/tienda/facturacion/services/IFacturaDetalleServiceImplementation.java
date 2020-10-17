@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
+import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 import org.una.tienda.facturacion.entities.FacturaDetalle;
 import org.una.tienda.facturacion.repositories.FacturaDetalleRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
@@ -20,11 +22,13 @@ import org.una.tienda.facturacion.utils.MapperUtils;
  * @author colo7
  */
 @Service
-public class IFacturaDetalleServiceImplementation implements IFacturaDetalleService{
+public class IFacturaDetalleServiceImplementation implements IFacturaDetalleService {
 
-     @Autowired
+    @Autowired
     private FacturaDetalleRepository facturaDetalleRepository;
-    
+    @Autowired
+    private IProductoPrecioService productoPrecioService;
+
     @Override
     public Optional<List<FacturaDetalleDTO>> findAll() {
         return (Optional<List<FacturaDetalleDTO>>) ConversionLista.findList((facturaDetalleRepository.findAll()), FacturaDetalleDTO.class);
@@ -32,12 +36,12 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
 
     @Override
     public Optional<FacturaDetalleDTO> findById(Long id) {
-         return (Optional<FacturaDetalleDTO>) ConversionLista.oneToDto(facturaDetalleRepository.findById(id), FacturaDetalleDTO.class);
+        return (Optional<FacturaDetalleDTO>) ConversionLista.oneToDto(facturaDetalleRepository.findById(id), FacturaDetalleDTO.class);
     }
 
     @Override
     public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalleDTO) {
-       FacturaDetalle facturaDetalle = MapperUtils.EntityFromDto(facturaDetalleDTO, FacturaDetalle.class);
+        FacturaDetalle facturaDetalle = MapperUtils.EntityFromDto(facturaDetalleDTO, FacturaDetalle.class);
         facturaDetalle = facturaDetalleRepository.save(facturaDetalle);
         return MapperUtils.DtoFromEntity(facturaDetalle, FacturaDetalleDTO.class);
     }
@@ -47,7 +51,7 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
         if (facturaDetalleRepository.findById(id).isPresent()) {
             FacturaDetalle facturaDetalle = MapperUtils.EntityFromDto(facturaDetalleDTO, FacturaDetalle.class);
             facturaDetalle = facturaDetalleRepository.save(facturaDetalle);
-            return Optional.ofNullable(MapperUtils.DtoFromEntity(facturaDetalle,FacturaDetalleDTO.class));
+            return Optional.ofNullable(MapperUtils.DtoFromEntity(facturaDetalle, FacturaDetalleDTO.class));
         } else {
             return null;
         }
@@ -55,7 +59,25 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
 
     @Override
     public void delete(Long id) {
-      facturaDetalleRepository.deleteById(id);
+        facturaDetalleRepository.deleteById(id);
     }
-    
+
+    @Override
+    @Transactional
+    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException {
+
+        Optional<ProductoPrecioDTO> productoPrecio = productoPrecioService.findById(facturaDetalle.getProductoId().getId());
+
+        if (productoPrecio.isEmpty()) {
+            //TODO:implementar verificar existencia de asignacion de precios
+            return null;
+        }
+        if (facturaDetalle.getDescuentoFinal() > productoPrecio.get().getDescuentoMaximo()) {
+            throw new ProductoConDescuentoMayorAlPermitidoException("Se intenta facturar un producto con un descuento mayor al permitido");
+        }
+        FacturaDetalle usuario = MapperUtils.EntityFromDto(facturaDetalle, FacturaDetalle.class);
+        usuario = facturaDetalleRepository.save(usuario);
+        return MapperUtils.DtoFromEntity(usuario, FacturaDetalleDTO.class);
+    }
+
 }
