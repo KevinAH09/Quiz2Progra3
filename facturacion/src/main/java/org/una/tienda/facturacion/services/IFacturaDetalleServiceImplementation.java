@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 import org.una.tienda.facturacion.entities.FacturaDetalle;
+import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 import org.una.tienda.facturacion.repositories.FacturaDetalleRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
 import org.una.tienda.facturacion.utils.MapperUtils;
@@ -39,12 +40,12 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
         return (Optional<FacturaDetalleDTO>) ConversionLista.oneToDto(facturaDetalleRepository.findById(id), FacturaDetalleDTO.class);
     }
 
-    @Override
-    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalleDTO) {
-        FacturaDetalle facturaDetalle = MapperUtils.EntityFromDto(facturaDetalleDTO, FacturaDetalle.class);
-        facturaDetalle = facturaDetalleRepository.save(facturaDetalle);
-        return MapperUtils.DtoFromEntity(facturaDetalle, FacturaDetalleDTO.class);
-    }
+//    @Override
+//    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalleDTO) {
+//        FacturaDetalle facturaDetalle = MapperUtils.EntityFromDto(facturaDetalleDTO, FacturaDetalle.class);
+//        facturaDetalle = facturaDetalleRepository.save(facturaDetalle);
+//        return MapperUtils.DtoFromEntity(facturaDetalle, FacturaDetalleDTO.class);
+//    }
 
     @Override
     public Optional<FacturaDetalleDTO> update(FacturaDetalleDTO facturaDetalleDTO, Long id) {
@@ -64,7 +65,7 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
 
     @Override
     @Transactional
-    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException {
+    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException{
 
         Optional<ProductoPrecioDTO> productoPrecio = productoPrecioService.findById(facturaDetalle.getProductoId().getId());
 

@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,8 @@ import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
+import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
+import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 
 /**
  *
@@ -29,6 +32,9 @@ public class FacturaDetalleServiceImpletationTests {
 
     @Autowired
     private IFacturaDetalleService facturaDetalleService;
+    
+    @Autowired
+    private IProductoPrecioService productoPrecioService;
 
     @Autowired
     private IFacturaService facturaService;
@@ -46,7 +52,14 @@ public class FacturaDetalleServiceImpletationTests {
     ClienteDTO clienteEjemplo;
 
     ProductoDTO productoEjemplo;
+    
+    ProductoPrecioDTO productoPrecioEjemplo;
 
+    
+    
+    
+    
+    
     @BeforeEach
     public void setup() {
 
@@ -73,6 +86,7 @@ public class FacturaDetalleServiceImpletationTests {
             {
                 setDescripcion("Producto De Ejemplo");
                 setImpuesto(0.10);
+               
             }
         };
         productoEjemplo = productoService.create(productoEjemplo);
@@ -84,10 +98,19 @@ public class FacturaDetalleServiceImpletationTests {
                 setProductoId(productoEjemplo);
             }
         };
+        productoPrecioEjemplo =productoPrecioService.create(productoPrecioEjemplo);
+        productoPrecioEjemplo = new ProductoPrecioDTO() {
+            {
+                setProductosId(productoEjemplo);
+                setPrecioColones(1000);
+                setDescuentoMaximo(10);
+                setDescuentoPromocional(2);
+            }
+        };
     }
 
     @Test
-    public void sePuedeCrearUnaFacturaDetalleCorrectamente() {
+    public void sePuedeCrearUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException {
 
         facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
 
@@ -102,7 +125,7 @@ public class FacturaDetalleServiceImpletationTests {
         }
     }
     @Test
-    public void sePuedeModificarUnaFacturaDetalleCorrectamente() {
+    public void sePuedeModificarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException {
 
         facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
         facturaDetalleEjemplo.setCantidad(39393);
@@ -121,7 +144,7 @@ public class FacturaDetalleServiceImpletationTests {
         }
     }
     @Test
-    public void sePuedeEliminarUnaFacturaDetalleCorrectamente() {
+    public void sePuedeEliminarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException {
         facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
         facturaDetalleService.delete(facturaDetalleEjemplo.getId());
         Optional<FacturaDetalleDTO> facturaDetalleEncontrado = facturaDetalleService.findById(facturaDetalleEjemplo.getId());
@@ -132,6 +155,15 @@ public class FacturaDetalleServiceImpletationTests {
             facturaDetalleEjemplo = null;
             Assertions.assertTrue(true);
         }
+    }
+    
+    @Test
+    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() {
+        assertThrows(ProductoConDescuentoMayorAlPermitidoException.class,
+                () -> {
+                    facturaDetalleService.create(facturaDetalleEjemplo);
+                }
+        ); 
     }
 
     @AfterEach
