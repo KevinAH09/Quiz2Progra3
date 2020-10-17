@@ -65,7 +65,7 @@ public class Cliente {
     private Date fechaModificacion;
     
     
-      private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @PrePersist
     public void prePersist() {
