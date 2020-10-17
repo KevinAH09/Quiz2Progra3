@@ -7,6 +7,7 @@ package org.una.tienda.facturacion.services;
 
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ public class ProductoServiceImplementationTests {
 
     @Test
     public void sePuedeCrearUnProductoCorrectamente() {
- 
+
         productoEjemplo = productoService.create(productoEjemplo);
 
         Optional<ProductoDTO> productoEncontrado = productoService.findById(productoEjemplo.getId());
@@ -47,6 +48,22 @@ public class ProductoServiceImplementationTests {
         if (productoEncontrado.isPresent()) {
             ProductoDTO producto = productoEncontrado.get();
             assertEquals(productoEjemplo.getId(), producto.getId());
+
+        } else {
+            fail("No se encontro la información en la BD");
+        }
+    }
+
+    @Test
+    public void sePuedeModificarUnProductoCorrectamente() {
+
+       productoService.update(productoEjemplo, productoEjemplo.getId());
+
+        Optional<ProductoDTO> productoEncontrado = productoService.findById(productoEjemplo.getId());
+
+        if (productoEncontrado.isPresent()) {
+            ProductoDTO producto = productoEncontrado.get();
+            Assertions.assertTrue(productoEjemplo.equals(producto));
 
         } else {
             fail("No se encontro la información en la BD");
@@ -63,4 +80,3 @@ public class ProductoServiceImplementationTests {
     }
 
 }
-
