@@ -7,6 +7,7 @@ package org.una.tienda.facturacion.services;
 
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
+import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
 
 /**
  *
@@ -97,6 +99,38 @@ public class FacturaDetalleServiceImpletationTests {
 
         } else {
             fail("No se encontro la información en la BD");
+        }
+    }
+     @Test
+    public void sePuedeModificarUnaFacturaDetalleCorrectamente() {
+
+        facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
+        facturaDetalleEjemplo.setCantidad(39393);
+        facturaDetalleService.update(facturaDetalleEjemplo, facturaDetalleEjemplo.getId());
+        Optional<FacturaDetalleDTO> facturaDetalleEncontrado = facturaDetalleService.findById(facturaDetalleEjemplo.getId());
+
+        if (facturaDetalleEncontrado.isPresent()) {
+            FacturaDetalleDTO facturaDetalle = facturaDetalleEncontrado.get();
+            Assertions.assertEquals(facturaDetalleEjemplo.getId(), facturaDetalle.getId());
+            Assertions.assertEquals(facturaDetalleEjemplo.getCantidad(), facturaDetalle.getCantidad());
+            Assertions.assertEquals(facturaDetalleEjemplo.getDescuentoFinal(), facturaDetalle.getDescuentoFinal());
+            Assertions.assertEquals(facturaDetalleEjemplo.getProductoId().getId(), facturaDetalle.getProductoId().getId());
+            Assertions.assertEquals(facturaDetalleEjemplo.getFacturaId().getId(), facturaDetalle.getFacturaId().getId());
+        } else {
+            fail("No se encontro la información en la BD");
+        }
+    }
+    @Test
+    public void sePuedeEliminarUnProductoExistenciaCorrectamente() {
+        facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
+        facturaDetalleService.delete(facturaDetalleEjemplo.getId());
+        Optional<FacturaDetalleDTO> productoEncontrado = facturaDetalleService.findById(facturaDetalleEjemplo.getId());
+
+        if (productoEncontrado.isPresent()) {
+            fail("El objeto no ha sido eliminado de la BD");
+        }else{
+            facturaDetalleEjemplo = null;
+            Assertions.assertTrue(true);
         }
     }
 

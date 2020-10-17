@@ -78,7 +78,7 @@ public class ProductoExistenciaServiceImpletationTests {
             ProductoExistenciaDTO productoExistencia = productoEncontrado.get();
             Assertions.assertEquals(productoExistenciaEjemplo.getId(), productoExistencia.getId());
             Assertions.assertEquals(productoExistenciaEjemplo.getCantidad(), productoExistencia.getCantidad());
-            Assertions.assertEquals(productoExistenciaEjemplo.getProductosId(), productoExistencia.getProductosId());
+            Assertions.assertEquals(productoExistenciaEjemplo.getProductosId().getId(), productoExistencia.getProductosId().getId());
         } else {
             fail("No se encontro la información en la BD");
         }
@@ -89,7 +89,7 @@ public class ProductoExistenciaServiceImpletationTests {
         productoExistenciaService.delete(productoExistenciaEjemplo.getId());
         Optional<ProductoExistenciaDTO> productoEncontrado = productoExistenciaService.findById(productoExistenciaEjemplo.getId());
 
-        if (productoEncontrado != null) {
+        if (productoEncontrado.isPresent()) {
             fail("El objeto no ha sido eliminado de la BD");
         }else{
             productoExistenciaEjemplo = null;

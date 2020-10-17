@@ -20,7 +20,7 @@ import org.una.tienda.facturacion.utils.MapperUtils;
  * @author colo7
  */
 @Service
-public class IProductoExistenciaImplementation implements IProductoExistenciaService{
+public class IProductoExistenciaServiceImplementation implements IProductoExistenciaService{
     
     @Autowired
     private ProductoExistenciaRepository productoExistenciaRepository;
