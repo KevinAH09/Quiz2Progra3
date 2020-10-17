@@ -9,6 +9,6 @@ package org.una.tienda.facturacion.entities;
  *
  * @author colo7
  */
-public class NewClass {
+public class Producto {
     
 }
