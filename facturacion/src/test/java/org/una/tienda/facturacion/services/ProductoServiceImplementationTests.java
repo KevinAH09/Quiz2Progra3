@@ -59,6 +59,7 @@ public class ProductoServiceImplementationTests {
     public void sePuedeModificarUnProductoCorrectamente() {
 
         productoEjemplo = productoService.create(productoEjemplo);
+        productoEjemplo.setDescripcion("Producto modificado");
         productoService.update(productoEjemplo, productoEjemplo.getId());
         Optional<ProductoDTO> productoEncontrado = productoService.findById(productoEjemplo.getId());
 
@@ -71,27 +72,29 @@ public class ProductoServiceImplementationTests {
             fail("No se encontro la información en la BD");
         }
     }
+    @Test
+    public void sePuedeEliminarUnProductoCorrectamente() {
+        productoEjemplo = productoService.create(productoEjemplo);
 
-//    @Test
-//    public void sePuedeEliminarUnProductoCorrectamente() {
-//        productoEjemplo = productoService.create(productoEjemplo);
-//        productoService.delete(productoEjemplo.getId());
-//
-//        Optional<ProductoDTO> productoEncontrado = productoService.findById(productoEjemplo.getId());
-//
-//        if (productoEncontrado != null) {
-////            ProductoDTO producto = productoEncontrado.get();
-////            Assertions.assertTrue(productoEjemplo!=producto);
-//            fail("El objeto no ha sido eliminado de la BD");
-//        }
-//    }
+        Optional<ProductoDTO> productoEncontrado = productoService.findById(productoEjemplo.getId());
+
+        if (productoEncontrado != null) {
+//            ProductoDTO producto = productoEncontrado.get();
+//            Assertions.assertTrue(productoEjemplo!=producto);
+            fail("El objeto no ha sido eliminado de la BD");
+        }else{
+            Assertions.assertTrue(true);
+        }
+    }
+
     @AfterEach
     public void tearDown() {
         if (productoEjemplo != null) {
-            productoService.delete(productoEjemplo.getId());
+            if (productoEjemplo.getId() != null) {
+                productoService.delete(productoEjemplo.getId());
+            }
             productoEjemplo = null;
         }
 
     }
-
 }
