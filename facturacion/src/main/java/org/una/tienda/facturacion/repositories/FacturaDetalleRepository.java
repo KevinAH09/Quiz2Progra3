@@ -5,10 +5,13 @@
  */
 package org.una.tienda.facturacion.repositories;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.una.tienda.facturacion.entities.FacturaDetalle;
+
 /**
  *
- * @author colo7
+ * @author Bosco
  */
-public class NewClass {
+public interface FacturaDetalleRepository extends JpaRepository<FacturaDetalle, Long>{
     
 }
