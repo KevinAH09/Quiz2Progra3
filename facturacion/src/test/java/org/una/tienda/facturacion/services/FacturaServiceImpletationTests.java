@@ -59,6 +59,7 @@ public class FacturaServiceImpletationTests {
             }
         };
     }
+
     public void initData() {
         clientePrueba = new ClienteDTO() {
             {
@@ -80,7 +81,6 @@ public class FacturaServiceImpletationTests {
 
             }
         };
-        facturaPrueba = facturaService.create(facturaPrueba);
     }
 
     @Test
@@ -145,7 +145,9 @@ public class FacturaServiceImpletationTests {
     @AfterEach
     public void tearDown() {
         if (facturaEjemplo != null) {
-            facturaService.delete(facturaEjemplo.getId());
+            if (facturaEjemplo.getId() != null) {
+                facturaService.delete(facturaEjemplo.getId());
+            }
             facturaEjemplo = null;
         }
 
