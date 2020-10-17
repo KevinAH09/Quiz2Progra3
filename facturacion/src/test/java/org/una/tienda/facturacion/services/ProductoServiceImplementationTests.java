@@ -75,7 +75,7 @@ public class ProductoServiceImplementationTests {
     @Test
     public void sePuedeEliminarUnProductoCorrectamente() {
         productoEjemplo = productoService.create(productoEjemplo);
-
+        productoService.delete(productoEjemplo.getId());
         Optional<ProductoDTO> productoEncontrado = productoService.findById(productoEjemplo.getId());
 
         if (productoEncontrado != null) {
@@ -83,6 +83,7 @@ public class ProductoServiceImplementationTests {
 //            Assertions.assertTrue(productoEjemplo!=producto);
             fail("El objeto no ha sido eliminado de la BD");
         }else{
+            productoEjemplo = null;
             Assertions.assertTrue(true);
         }
     }
@@ -90,9 +91,7 @@ public class ProductoServiceImplementationTests {
     @AfterEach
     public void tearDown() {
         if (productoEjemplo != null) {
-            if (productoEjemplo.getId() != null) {
-                productoService.delete(productoEjemplo.getId());
-            }
+            productoService.delete(productoEjemplo.getId());
             productoEjemplo = null;
         }
 
