@@ -60,6 +60,18 @@ public class FacturaDetalleServiceImpletationTests {
 
     ProductoExistenciaDTO productoExistenciaEjemplo;
 
+    FacturaDetalleDTO facturaDetallePrueba;
+
+    FacturaDTO facturaPrueba;
+
+    ClienteDTO clientePrueba;
+
+    ProductoDTO productoPrueba;
+
+    ProductoPrecioDTO productoPrecioPrueba;
+
+    ProductoExistenciaDTO productoExistenciaPrueba;
+
     @BeforeEach
     public void setup() {
 
@@ -109,7 +121,7 @@ public class FacturaDetalleServiceImpletationTests {
             {
                 setProductosId(productoEjemplo);
                 setPrecioColones(1000);
-                setDescuentoMaximo(10);
+                setDescuentoMaximo(20);
                 setDescuentoPromocional(2);
             }
         };
@@ -117,7 +129,59 @@ public class FacturaDetalleServiceImpletationTests {
 
     }
 
-    
+    public void initData() {
+        clientePrueba = new ClienteDTO() {
+            {
+                setDireccion("San Antonio");
+                setEmail("colo7112012@gmail.com");
+                setNombre("Kevin");
+                setTelefono("61358010");
+            }
+        };
+        clientePrueba = clienteService.create(clientePrueba);
+        facturaPrueba = new FacturaDTO() {
+            {
+                setCaja(21);
+                setDescuentoGeneral(2);
+                setClienteId(clientePrueba);
+
+            }
+        };
+        facturaPrueba = facturaService.create(facturaPrueba);
+
+        productoPrueba = new ProductoDTO() {
+            {
+                setDescripcion("Producto De Ejemplo");
+                setImpuesto(0.10);
+
+            }
+        };
+        productoPrueba = productoService.create(productoPrueba);
+        facturaDetallePrueba = new FacturaDetalleDTO() {
+            {
+                setCantidad(200);
+                setDescuentoFinal(10);
+                setFacturaId(facturaPrueba);
+                setProductoId(productoPrueba);
+            }
+        };
+        productoExistenciaPrueba = new ProductoExistenciaDTO() {
+            {
+                setProductosId(productoPrueba);
+                setCantidad(1);
+            }
+        };
+        productoExistenciaPrueba = productoExistenciaService.create(productoExistenciaPrueba);
+        productoPrecioPrueba = new ProductoPrecioDTO() {
+            {
+                setProductosId(productoPrueba);
+                setPrecioColones(1000);
+                setDescuentoMaximo(5);
+                setDescuentoPromocional(2);
+            }
+        };
+        productoPrecioPrueba = productoPrecioService.create(productoPrecioPrueba);
+    }
 
     @Test
     public void sePuedeCrearUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException {
@@ -171,9 +235,10 @@ public class FacturaDetalleServiceImpletationTests {
 
     @Test
     public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() {
+        initData();
         assertThrows(ProductoConDescuentoMayorAlPermitidoException.class,
                 () -> {
-                    facturaDetalleService.create(facturaDetalleEjemplo);
+                    facturaDetalleService.create(facturaDetallePrueba);
                 }
         );
     }
@@ -181,7 +246,9 @@ public class FacturaDetalleServiceImpletationTests {
     @AfterEach
     public void tearDown() {
         if (facturaDetalleEjemplo != null) {
-            facturaDetalleService.delete(facturaDetalleEjemplo.getId());
+            if (facturaDetalleEjemplo.getId() != null) {
+                facturaDetalleService.delete(facturaDetalleEjemplo.getId());
+            }
             facturaDetalleEjemplo = null;
         }
 
