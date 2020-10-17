@@ -5,12 +5,31 @@
  */
 package org.una.tienda.facturacion.dtos;
 
-import org.una.tienda.facturacion.entities.*;
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  *
  * @author colo7
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class ProductoExistenciaDTO {
-    
+   
+    private Long id;
+   
+    private ProductoDTO productosId;
+
+    private double cantidad;
+  
+    private boolean estado;
+
+    private Date fechaRegistro;
+
+    private Date fechaModificacion;
 }
