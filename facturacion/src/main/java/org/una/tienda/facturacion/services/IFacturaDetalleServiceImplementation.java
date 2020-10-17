@@ -8,6 +8,7 @@ package org.una.tienda.facturacion.services;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.entities.FacturaDetalle;
 import org.una.tienda.facturacion.repositories.FacturaDetalleRepository;
@@ -18,6 +19,7 @@ import org.una.tienda.facturacion.utils.MapperUtils;
  *
  * @author colo7
  */
+@Service
 public class IFacturaDetalleServiceImplementation implements IFacturaDetalleService{
 
      @Autowired

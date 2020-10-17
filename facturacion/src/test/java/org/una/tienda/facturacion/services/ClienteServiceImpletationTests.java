@@ -59,7 +59,7 @@ public class ClienteServiceImpletationTests {
         }
     }
     @Test
-    public void sePuedeModificarUnProductoCorrectamente() {
+    public void sePuedeModificarUnClienteCorrectamente() {
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
         clienteEjemplo.setDireccion("cliente modificado");
@@ -78,12 +78,12 @@ public class ClienteServiceImpletationTests {
         }
     }
     @Test
-    public void sePuedeEliminarUnProductoCorrectamente() {
+    public void sePuedeEliminarUnClienteCorrectamente() {
         clienteEjemplo = clienteService.create(clienteEjemplo);
         clienteService.delete(clienteEjemplo.getId());
         Optional<ClienteDTO> productoEncontrado = clienteService.findById(clienteEjemplo.getId());
 
-        if (productoEncontrado != null) {
+        if (productoEncontrado.isPresent()) {
             fail("El objeto no ha sido eliminado de la BD");
         }else{
             clienteEjemplo = null;

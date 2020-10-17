@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
 
 /**
@@ -22,17 +23,30 @@ import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
  */
 @SpringBootTest
 public class ProductoExistenciaServiceImpletationTests {
+    
+     @Autowired
+    private IProductoService productoService;
+
     @Autowired
     private IProductoExistenciaService productoExistenciaService;
 
     ProductoExistenciaDTO productoExistenciaEjemplo;
 
+     ProductoDTO productoEjemplo;
+    
     @BeforeEach
     public void setup() {
+        productoEjemplo = new ProductoDTO() {
+            {
+                setDescripcion("Producto De Ejemplo");
+                setImpuesto(0.10);
+            }
+        };
+        productoEjemplo = productoService.create(productoEjemplo);
         productoExistenciaEjemplo = new ProductoExistenciaDTO(){
             {
                 setCantidad(200);
-                setProductosId(null);
+                setProductosId(productoEjemplo);
             }
         };
     }
