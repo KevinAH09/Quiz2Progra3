@@ -72,7 +72,7 @@ public class FacturaServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnaFacturaDetalleCorrectamente() {
+    public void sePuedeModificarUnaFacturaCorrectamente() {
 
         facturaEjemplo = facturaService.create(facturaEjemplo);
         facturaEjemplo.setCaja(39393);
@@ -91,12 +91,12 @@ public class FacturaServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeEliminarUnaFacturaDetalleCorrectamente() {
+    public void sePuedeEliminarUnaFacturaCorrectamente() {
         facturaEjemplo = facturaService.create(facturaEjemplo);
         facturaService.delete(facturaEjemplo.getId());
         Optional<FacturaDTO> facturaEncontrado = facturaService.findById(facturaEjemplo.getId());
 
-        if (facturaEncontrado.isPresent()) {
+        if (facturaEncontrado != null) {
             fail("El objeto no ha sido eliminado de la BD");
         } else {
             facturaEjemplo = null;

@@ -54,7 +54,7 @@ public class ProductoPrecio {
     
     @ManyToOne
     @JoinColumn( name = "productos_id")
-    private Cliente productosId;
+    private Producto productosId;
     
     @Column(name = "fecha_registro", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

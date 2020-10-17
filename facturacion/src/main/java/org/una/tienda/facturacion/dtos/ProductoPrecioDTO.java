@@ -31,7 +31,7 @@ public class ProductoPrecioDTO {
 
     private boolean estado;
     
-    private ClienteDTO productosId;
+    private ProductoDTO productosId;
 
     private Date fechaRegistro;
 

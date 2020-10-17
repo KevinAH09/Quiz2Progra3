@@ -7,12 +7,14 @@ package org.una.tienda.facturacion.services;
 
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 
 /**
@@ -27,16 +29,26 @@ public class ProductoPrecioServiceImpletationTests {
     @Autowired
     private IProductoService productoService;
     
-    
 
-    ProductoPrecioDTO ProductoPrecioEjemplo;
+    ProductoDTO productoEjemplo;
+    
+    ProductoPrecioDTO productoPrecioEjemplo;
 
     @BeforeEach
     public void setup() {
-        ProductoPrecioEjemplo = new ProductoPrecioDTO() {
+         productoEjemplo = new ProductoDTO() {
+            {
+                setDescripcion("Producto De Ejemplo");
+                setImpuesto(0.10);
+            }
+        };
+          productoEjemplo = productoService.create(productoEjemplo);
+        productoPrecioEjemplo = new ProductoPrecioDTO() {
             {
                 setDescuentoMaximo(0);
                 setDescuentoPromocional(0);
+                setPrecioColones(200);
+                setProductosId(productoEjemplo);
             }
         };
     }
@@ -44,24 +56,57 @@ public class ProductoPrecioServiceImpletationTests {
     @Test
     public void sePuedeCrearUnProductoPrecioCorrectamente() {
  
-        ProductoPrecioEjemplo = productoPrecioService.create(ProductoPrecioEjemplo);
+        productoPrecioEjemplo = productoPrecioService.create(productoPrecioEjemplo);
 
-        Optional<ProductoPrecioDTO> ProductoPrecioEncontrado = productoPrecioService.findById(ProductoPrecioEjemplo.getId());
+        Optional<ProductoPrecioDTO> ProductoPrecioEncontrado = productoPrecioService.findById(productoPrecioEjemplo.getId());
 
         if (ProductoPrecioEncontrado.isPresent()) {
             ProductoPrecioDTO ProductoPrecio = ProductoPrecioEncontrado.get();
-            assertEquals(ProductoPrecioEjemplo.getId(), ProductoPrecio.getId());
+            assertEquals(productoPrecioEjemplo.getId(), ProductoPrecio.getId());
 
         } else {
             fail("No se encontro la información en la BD");
         }
     }
+    
+     @Test
+    public void sePuedeModificarUnProductoPrecioCorrectamente() {
+
+        productoPrecioEjemplo = productoPrecioService.create(productoPrecioEjemplo);
+        productoPrecioEjemplo.setDescuentoPromocional(0);
+        productoPrecioService.update(productoPrecioEjemplo, productoPrecioEjemplo.getId());
+        Optional<ProductoPrecioDTO> productoPrecioEncontrado = productoPrecioService.findById(productoPrecioEjemplo.getId());
+
+        if (productoPrecioEncontrado.isPresent()) {
+            ProductoPrecioDTO productoPrecio = productoPrecioEncontrado.get();
+            Assertions.assertEquals(productoPrecioEjemplo.getId(), productoPrecio.getId());
+            Assertions.assertEquals(productoPrecioEjemplo.getDescuentoMaximo(), productoPrecio.getDescuentoMaximo());
+            Assertions.assertEquals(productoPrecioEjemplo.getDescuentoPromocional(), productoPrecio.getDescuentoPromocional());
+            Assertions.assertEquals(productoPrecioEjemplo.getPrecioColones(), productoPrecio.getPrecioColones());
+            Assertions.assertEquals(productoPrecioEjemplo.getProductosId().getId(), productoPrecio.getProductosId().getId());
+        } else {
+            fail("No se encontro la información en la BD");
+        }
+    }
+    @Test
+    public void sePuedeEliminarUnProductoPrecioCorrectamente() {
+        productoPrecioEjemplo = productoPrecioService.create(productoPrecioEjemplo);
+        productoPrecioService.delete(productoPrecioEjemplo.getId());
+        Optional<ProductoPrecioDTO> productoPrecioEncontrado = productoPrecioService.findById(productoPrecioEjemplo.getId());
+
+        if (productoPrecioEncontrado != null) {
+            fail("El objeto no ha sido eliminado de la BD");
+        }else{
+            productoPrecioEjemplo = null;
+            Assertions.assertTrue(true);
+        }
+    }
 
     @AfterEach
     public void tearDown() {
-        if (ProductoPrecioEjemplo != null) {
-            productoPrecioService.delete(ProductoPrecioEjemplo.getId());
-            ProductoPrecioEjemplo = null;
+        if (productoPrecioEjemplo != null) {
+            productoPrecioService.delete(productoPrecioEjemplo.getId());
+            productoPrecioEjemplo = null;
         }
 
     }
