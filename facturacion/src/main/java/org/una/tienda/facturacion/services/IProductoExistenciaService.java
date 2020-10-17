@@ -21,4 +21,6 @@ public interface IProductoExistenciaService {
     public ProductoExistenciaDTO create(ProductoExistenciaDTO ProductoExistencia);
 
     public Optional<ProductoExistenciaDTO> update(ProductoExistenciaDTO ProductoExistencia, Long id);
+    
+    public void delete(Long id);
 }
