@@ -21,43 +21,43 @@ import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
  */
 @SpringBootTest
 public class ProductoExistenciaServiceImpletationTests {
-//    @Autowired
-//    private IProductoExistenciaService productoExistenciaService;
-//
-//    ProductoExistenciaDTO productoExistenciaEjemplo;
-//
-//    @BeforeEach
-//    public void setup() {
-//        productoExistenciaEjemplo = new ProductoExistenciaDTO(){
-//            {
-//                setCantidad(200);
-////                setProductosId();
-//            }
-//        };
-//    }
-//
-//    @Test
-//    public void sePuedeCrearUnProductoCorrectamente() {
-//
-//        productoExistenciaEjemplo = productoExistenciaService.create(productoExistenciaEjemplo);
-//
-//        Optional<ProductoExistenciaDTO> productoExistenciaEncontrado = productoExistenciaService.findById(productoExistenciaEjemplo.getId());
-//
-//        if (productoExistenciaEncontrado.isPresent()) {
-//            ProductoExistenciaDTO productoExistencia = productoExistenciaEncontrado.get();
-//            assertEquals(productoExistenciaEjemplo.getId(), productoExistencia.getId());
-//
-//        } else {
-//            fail("No se encontro la información en la BD");
-//        }
-//    }
-//
-//    @AfterEach
-//    public void tearDown() {
-//        if (productoExistenciaEjemplo != null) {
-//            productoExistenciaService.delete(productoExistenciaEjemplo.getId());
-//            productoExistenciaEjemplo = null;
-//        }
-//
-//    }
+    @Autowired
+    private IProductoExistenciaService productoExistenciaService;
+
+    ProductoExistenciaDTO productoExistenciaEjemplo;
+
+    @BeforeEach
+    public void setup() {
+        productoExistenciaEjemplo = new ProductoExistenciaDTO(){
+            {
+                setCantidad(200);
+//                setProductosId();
+            }
+        };
+    }
+
+    @Test
+    public void sePuedeCrearUnProductoCorrectamente() {
+
+        productoExistenciaEjemplo = productoExistenciaService.create(productoExistenciaEjemplo);
+
+        Optional<ProductoExistenciaDTO> productoExistenciaEncontrado = productoExistenciaService.findById(productoExistenciaEjemplo.getId());
+
+        if (productoExistenciaEncontrado.isPresent()) {
+            ProductoExistenciaDTO productoExistencia = productoExistenciaEncontrado.get();
+            assertEquals(productoExistenciaEjemplo.getId(), productoExistencia.getId());
+
+        } else {
+            fail("No se encontro la información en la BD");
+        }
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (productoExistenciaEjemplo != null) {
+            productoExistenciaService.delete(productoExistenciaEjemplo.getId());
+            productoExistenciaEjemplo = null;
+        }
+
+    }
 }
