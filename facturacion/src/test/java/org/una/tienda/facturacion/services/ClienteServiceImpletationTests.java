@@ -7,6 +7,7 @@ package org.una.tienda.facturacion.services;
 
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +41,7 @@ public class ClienteServiceImpletationTests {
             }
         };
     }
+    
 
     @Test
     public void sePuedeCrearUnClienteCorrectamente() {
@@ -54,6 +56,38 @@ public class ClienteServiceImpletationTests {
 
         } else {
             fail("No se encontro la información en la BD");
+        }
+    }
+    @Test
+    public void sePuedeModificarUnProductoCorrectamente() {
+
+        clienteEjemplo = clienteService.create(clienteEjemplo);
+        clienteEjemplo.setDireccion("cliente modificado");
+        clienteService.update(clienteEjemplo, clienteEjemplo.getId());
+        Optional<ClienteDTO> productoEncontrado = clienteService.findById(clienteEjemplo.getId());
+
+        if (productoEncontrado.isPresent()) {
+            ClienteDTO cliente = productoEncontrado.get();
+            Assertions.assertEquals(clienteEjemplo.getId(), cliente.getId());
+            Assertions.assertEquals(clienteEjemplo.getDireccion(), cliente.getDireccion());
+            Assertions.assertEquals(clienteEjemplo.getEmail(), cliente.getEmail());
+            Assertions.assertEquals(clienteEjemplo.getNombre(), cliente.getNombre());
+            Assertions.assertEquals(clienteEjemplo.getTelefono(), cliente.getTelefono());
+        } else {
+            fail("No se encontro la información en la BD");
+        }
+    }
+    @Test
+    public void sePuedeEliminarUnProductoCorrectamente() {
+        clienteEjemplo = clienteService.create(clienteEjemplo);
+        clienteService.delete(clienteEjemplo.getId());
+        Optional<ClienteDTO> productoEncontrado = clienteService.findById(clienteEjemplo.getId());
+
+        if (productoEncontrado != null) {
+            fail("El objeto no ha sido eliminado de la BD");
+        }else{
+            clienteEjemplo = null;
+            Assertions.assertTrue(true);
         }
     }
 
