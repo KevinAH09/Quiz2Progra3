@@ -11,6 +11,6 @@ import org.una.tienda.facturacion.entities.*;
  *
  * @author colo7
  */
-public class ProductoExistenteDTO {
+public class ProductoExistenciaDTO {
     
 }
