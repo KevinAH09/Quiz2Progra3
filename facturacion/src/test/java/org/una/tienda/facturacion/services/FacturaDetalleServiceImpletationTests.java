@@ -32,16 +32,19 @@ public class FacturaDetalleServiceImpletationTests {
 
     @Autowired
     private IFacturaDetalleService facturaDetalleService;
-    
+
     @Autowired
     private IProductoPrecioService productoPrecioService;
+
+    @Autowired
+    private IProductoExistenciaService productoExistenciaService;
 
     @Autowired
     private IFacturaService facturaService;
 
     @Autowired
     private IClienteService clienteService;
-    
+
     @Autowired
     private IProductoService productoService;
 
@@ -52,14 +55,11 @@ public class FacturaDetalleServiceImpletationTests {
     ClienteDTO clienteEjemplo;
 
     ProductoDTO productoEjemplo;
-    
+
     ProductoPrecioDTO productoPrecioEjemplo;
 
-    
-    
-    
-    
-    
+    ProductoExistenciaDTO productoExistenciaEjemplo;
+
     @BeforeEach
     public void setup() {
 
@@ -86,7 +86,7 @@ public class FacturaDetalleServiceImpletationTests {
             {
                 setDescripcion("Producto De Ejemplo");
                 setImpuesto(0.10);
-               
+
             }
         };
         productoEjemplo = productoService.create(productoEjemplo);
@@ -98,7 +98,13 @@ public class FacturaDetalleServiceImpletationTests {
                 setProductoId(productoEjemplo);
             }
         };
-        productoPrecioEjemplo =productoPrecioService.create(productoPrecioEjemplo);
+        productoExistenciaEjemplo = new ProductoExistenciaDTO() {
+            {
+                setProductosId(productoEjemplo);
+                setCantidad(1);
+            }
+        };
+        productoExistenciaEjemplo = productoExistenciaService.create(productoExistenciaEjemplo);
         productoPrecioEjemplo = new ProductoPrecioDTO() {
             {
                 setProductosId(productoEjemplo);
@@ -107,7 +113,11 @@ public class FacturaDetalleServiceImpletationTests {
                 setDescuentoPromocional(2);
             }
         };
+        productoPrecioEjemplo = productoPrecioService.create(productoPrecioEjemplo);
+
     }
+
+    
 
     @Test
     public void sePuedeCrearUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException {
@@ -124,6 +134,7 @@ public class FacturaDetalleServiceImpletationTests {
             fail("No se encontro la información en la BD");
         }
     }
+
     @Test
     public void sePuedeModificarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException {
 
@@ -143,6 +154,7 @@ public class FacturaDetalleServiceImpletationTests {
             fail("No se encontro la información en la BD");
         }
     }
+
     @Test
     public void sePuedeEliminarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException {
         facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
@@ -151,19 +163,19 @@ public class FacturaDetalleServiceImpletationTests {
 
         if (facturaDetalleEncontrado.isPresent()) {
             fail("El objeto no ha sido eliminado de la BD");
-        }else{
+        } else {
             facturaDetalleEjemplo = null;
             Assertions.assertTrue(true);
         }
     }
-    
+
     @Test
     public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() {
         assertThrows(ProductoConDescuentoMayorAlPermitidoException.class,
                 () -> {
                     facturaDetalleService.create(facturaDetalleEjemplo);
                 }
-        ); 
+        );
     }
 
     @AfterEach
@@ -172,7 +184,7 @@ public class FacturaDetalleServiceImpletationTests {
             facturaDetalleService.delete(facturaDetalleEjemplo.getId());
             facturaDetalleEjemplo = null;
         }
-        
 
     }
+
 }

@@ -10,6 +10,7 @@ package org.una.tienda.facturacion.exceptions;
  * @author Bosco
  */
 public class ProductoConDescuentoMayorAlPermitidoException extends Exception{
+    
     private String exception;
     
     public ProductoConDescuentoMayorAlPermitidoException(String exception)
@@ -17,10 +18,12 @@ public class ProductoConDescuentoMayorAlPermitidoException extends Exception{
         this.exception=exception;
     }
 
-   
-    public String getException() {
-        return exception;
+    @Override
+    public String getMessage() {
+        return this.exception;
     }
+
+    
     
     
 }
