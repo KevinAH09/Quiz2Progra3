@@ -8,6 +8,7 @@ package org.una.tienda.facturacion.services;
 import java.util.List;
 import java.util.Optional;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
+import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
 
 /**
  *

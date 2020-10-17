@@ -21,6 +21,7 @@ import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
+import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 
 /**
@@ -129,7 +130,7 @@ public class FacturaDetalleServiceImpletationTests {
 
     }
 
-    public void initData() {
+    public void initData() throws ProductoConDescuentoMayorAlPermitidoException {
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -234,7 +235,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() {
+    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() throws ProductoConDescuentoMayorAlPermitidoException {
         initData();
         assertThrows(ProductoConDescuentoMayorAlPermitidoException.class,
                 () -> {

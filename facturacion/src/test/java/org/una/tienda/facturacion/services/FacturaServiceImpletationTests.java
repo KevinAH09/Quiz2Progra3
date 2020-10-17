@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
+import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
 
 /**
  *
@@ -36,7 +37,7 @@ public class FacturaServiceImpletationTests {
     private IClienteService clienteService;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws ClienteConTelefonoCorreoDireccionException {
         clienteEjemplo = new ClienteDTO() {
             {
                 setDireccion("San Antonio");

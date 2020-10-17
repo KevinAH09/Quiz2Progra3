@@ -7,11 +7,15 @@ package org.una.tienda.facturacion.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.entities.Cliente;
+import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
+import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 import org.una.tienda.facturacion.repositories.ClienteRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
 import org.una.tienda.facturacion.utils.MapperUtils;
@@ -35,7 +39,38 @@ public class IClienteServiceImplementation implements IClienteService{
     }
 
     @Override
-    public ClienteDTO create(ClienteDTO clienteDTO) {
+    public ClienteDTO create(ClienteDTO clienteDTO)
+    {
+        
+        if(clienteDTO.getTelefono().isEmpty())
+        {
+            try {
+                throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin telefono asignado");
+            } catch (ClienteConTelefonoCorreoDireccionException ex) {
+                Logger.getLogger(IClienteServiceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+        if(clienteDTO.getDireccion().isEmpty())
+        {
+            try {
+                throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin direccion asignada");
+            } catch (ClienteConTelefonoCorreoDireccionException ex) {
+                Logger.getLogger(IClienteServiceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+        if(clienteDTO.getEmail().isEmpty())
+        {
+          
+            try {
+                throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin correo asignado");
+            } catch (ClienteConTelefonoCorreoDireccionException ex) {
+                Logger.getLogger(IClienteServiceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+          
+        }
+        
         Cliente cliente = MapperUtils.EntityFromDto(clienteDTO, Cliente.class);
         cliente = clienteRepository.save(cliente);
         return MapperUtils.DtoFromEntity(cliente, ClienteDTO.class);
@@ -44,6 +79,8 @@ public class IClienteServiceImplementation implements IClienteService{
     @Override
     public Optional<ClienteDTO> update(ClienteDTO clienteDto, Long id) {
         if (clienteRepository.findById(id).isPresent()) {
+            
+            
             Cliente cliente = MapperUtils.EntityFromDto(clienteDto, Cliente.class);
             cliente = clienteRepository.save(cliente);
             return Optional.ofNullable(MapperUtils.DtoFromEntity(cliente,ClienteDTO.class));

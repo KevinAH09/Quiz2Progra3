@@ -9,12 +9,14 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
+import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
 
 /**
  *
@@ -29,6 +31,8 @@ public class ClienteServiceImpletationTests {
     
     
     ClienteDTO clienteEjemplo;
+    
+    ClienteDTO clientePrueba;
 
     @BeforeEach
     public void setup() {
@@ -41,10 +45,17 @@ public class ClienteServiceImpletationTests {
             }
         };
     }
-    
+    public void initData() {
+    clientePrueba = new ClienteDTO() {
+            {
+                setNombre("Kevin");
+            }
+        };
+        clientePrueba = clienteService.create(clientePrueba);
+    }
 
     @Test
-    public void sePuedeCrearUnClienteCorrectamente() {
+    public void sePuedeCrearUnClienteCorrectamente()  {
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
 
@@ -59,7 +70,7 @@ public class ClienteServiceImpletationTests {
         }
     }
     @Test
-    public void sePuedeModificarUnClienteCorrectamente() {
+    public void sePuedeModificarUnClienteCorrectamente(){
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
         clienteEjemplo.setDireccion("cliente modificado");
@@ -78,7 +89,7 @@ public class ClienteServiceImpletationTests {
         }
     }
     @Test
-    public void sePuedeEliminarUnClienteCorrectamente() {
+    public void sePuedeEliminarUnClienteCorrectamente()  {
         clienteEjemplo = clienteService.create(clienteEjemplo);
         clienteService.delete(clienteEjemplo.getId());
         Optional<ClienteDTO> productoEncontrado = clienteService.findById(clienteEjemplo.getId());
@@ -89,6 +100,16 @@ public class ClienteServiceImpletationTests {
             clienteEjemplo = null;
             Assertions.assertTrue(true);
         }
+    }
+    
+    @Test
+    public void seEvitaClienteSinTelefonoDireccionCorreo() {
+        initData();
+        assertThrows(ClienteConTelefonoCorreoDireccionException.class,
+                () -> {
+                    clienteService.create(clientePrueba);
+                }
+        );
     }
 
     @AfterEach
