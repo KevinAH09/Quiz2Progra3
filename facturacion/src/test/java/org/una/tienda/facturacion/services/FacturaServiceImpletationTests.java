@@ -123,7 +123,7 @@ public class FacturaServiceImpletationTests {
         initData();
         assertThrows(NoModificarInformacionConEstadoInactivo.class,
                 () -> {
-                    facturaService.create(facturaPrueba);
+                    facturaService.update(facturaPrueba,facturaPrueba.getId());
                 }
         );
     }

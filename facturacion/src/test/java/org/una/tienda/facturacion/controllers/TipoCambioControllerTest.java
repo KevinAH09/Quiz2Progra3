@@ -17,22 +17,22 @@ import org.springframework.boot.web.server.LocalServerPort;
  *
  * @author colo7
  */
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class TipoCambioControllerTest {
-
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Test
-    public void seCalculaCorrectamenteTipoDeCambioADolares() {
-        String valorEsperado = "10";
-        String valorEnColones = "6100";
-        String resultadoApi = this.restTemplate.getForObject("http://localhost:" + port + "/tipo-cambio/a-dolares/" + valorEnColones, String.class);
-        System.out.println(resultadoApi);
-        Assertions.assertEquals(resultadoApi, valorEsperado, "El tipo de cambio no se calcula correctamente");
-    }
-
-}
+//@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+//public class TipoCambioControllerTest {
+//
+//    @LocalServerPort
+//    private int port;
+//
+//    @Autowired
+//    private TestRestTemplate restTemplate;
+//
+//    @Test
+//    public void seCalculaCorrectamenteTipoDeCambioADolares() {
+//        String valorEsperado = "10";
+//        String valorEnColones = "6100";
+//        String resultadoApi = this.restTemplate.getForObject("http://localhost:" + port + "/tipo-cambio/a-dolares/" + valorEnColones, String.class);
+//        System.out.println(resultadoApi);
+//        Assertions.assertEquals(resultadoApi, valorEsperado, "El tipo de cambio no se calcula correctamente");
+//    }
+//
+//}
