@@ -7,6 +7,7 @@ package org.una.tienda.facturacion.services;
 
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ public class ProductoExistenciaServiceImpletationTests {
         productoExistenciaEjemplo = new ProductoExistenciaDTO(){
             {
                 setCantidad(200);
-//                setProductosId();
+                setProductosId(null);
             }
         };
     }
@@ -49,6 +50,36 @@ public class ProductoExistenciaServiceImpletationTests {
 
         } else {
             fail("No se encontro la información en la BD");
+        }
+    }
+    @Test
+    public void sePuedeModificarUnProductoExistenciaCorrectamente() {
+
+        productoExistenciaEjemplo = productoExistenciaService.create(productoExistenciaEjemplo);
+        productoExistenciaEjemplo.setCantidad(39393);
+        productoExistenciaService.update(productoExistenciaEjemplo, productoExistenciaEjemplo.getId());
+        Optional<ProductoExistenciaDTO> productoEncontrado = productoExistenciaService.findById(productoExistenciaEjemplo.getId());
+
+        if (productoEncontrado.isPresent()) {
+            ProductoExistenciaDTO productoExistencia = productoEncontrado.get();
+            Assertions.assertEquals(productoExistenciaEjemplo.getId(), productoExistencia.getId());
+            Assertions.assertEquals(productoExistenciaEjemplo.getCantidad(), productoExistencia.getCantidad());
+            Assertions.assertEquals(productoExistenciaEjemplo.getProductosId(), productoExistencia.getProductosId());
+        } else {
+            fail("No se encontro la información en la BD");
+        }
+    }
+    @Test
+    public void sePuedeEliminarUnProductoExistenciaCorrectamente() {
+        productoExistenciaEjemplo = productoExistenciaService.create(productoExistenciaEjemplo);
+        productoExistenciaService.delete(productoExistenciaEjemplo.getId());
+        Optional<ProductoExistenciaDTO> productoEncontrado = productoExistenciaService.findById(productoExistenciaEjemplo.getId());
+
+        if (productoEncontrado != null) {
+            fail("El objeto no ha sido eliminado de la BD");
+        }else{
+            productoExistenciaEjemplo = null;
+            Assertions.assertTrue(true);
         }
     }
 
