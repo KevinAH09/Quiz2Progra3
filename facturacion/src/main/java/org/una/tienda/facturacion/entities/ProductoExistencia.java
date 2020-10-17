@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -34,16 +36,18 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class ProductoExistencia {
-     @Id
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="productos_id")
+    @ManyToOne
+    @JoinColumn(name = "productos_id")
     private Producto productosId;
 
     @Column
     private double cantidad;
-    
+
     @Column
     private boolean estado;
 

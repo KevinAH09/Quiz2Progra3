@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -47,7 +49,8 @@ public class Factura {
     @Column
     private boolean estado;
     
-    @Column( name = "cliente_id")
+    @ManyToOne
+    @JoinColumn( name = "cliente_id")
     private Cliente clienteId;
     
     @Column(name = "fecha_registro", updatable = false)

@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -41,8 +43,8 @@ public class ProductoPrecio {
     @Column( name = "descuento_maximo")
     private double descuentoMaximo;
     
-    @Column( name = "descuento_General")
-    private double descuentoGeneral;
+    @Column( name = "descuento_promocional")
+    private double descuentoPromocional;
  
     @Column( name = "precio_colones")
     private double precioColones;
@@ -50,7 +52,8 @@ public class ProductoPrecio {
     @Column
     private boolean estado;
     
-    @Column( name = "productos_id")
+    @ManyToOne
+    @JoinColumn( name = "productos_id")
     private Cliente productosId;
     
     @Column(name = "fecha_registro", updatable = false)
