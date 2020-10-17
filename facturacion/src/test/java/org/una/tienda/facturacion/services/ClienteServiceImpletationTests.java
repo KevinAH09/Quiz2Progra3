@@ -44,11 +44,11 @@ public class ClienteServiceImpletationTests {
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
 
-        Optional<ClienteDTO> productoEncontrado = clienteService.findById(clienteEjemplo.getId());
+        Optional<ClienteDTO> clienteEncontrado = clienteService.findById(clienteEjemplo.getId());
 
-        if (productoEncontrado.isPresent()) {
-            ClienteDTO producto = productoEncontrado.get();
-            assertEquals(clienteEjemplo.getId(), producto.getId());
+        if (clienteEncontrado.isPresent()) {
+            ClienteDTO cliente = clienteEncontrado.get();
+            assertEquals(clienteEjemplo.getId(), cliente.getId());
 
         } else {
             fail("No se encontro la información en la BD");
