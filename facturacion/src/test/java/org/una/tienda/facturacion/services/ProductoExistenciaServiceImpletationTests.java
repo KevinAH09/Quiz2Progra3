@@ -37,7 +37,7 @@ public class ProductoExistenciaServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeCrearUnProductoCorrectamente() {
+    public void sePuedeCrearUnProductoExistenciaCorrectamente() {
 
         productoExistenciaEjemplo = productoExistenciaService.create(productoExistenciaEjemplo);
 

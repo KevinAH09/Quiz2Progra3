@@ -37,7 +37,7 @@ public class FacturaServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeCrearUnProductoCorrectamente() {
+    public void sePuedeCrearUnaFacturaCorrectamente() {
  
         facturaEjemplo = facturaService.create(facturaEjemplo);
 

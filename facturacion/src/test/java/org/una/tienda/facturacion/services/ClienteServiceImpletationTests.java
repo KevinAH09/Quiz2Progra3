@@ -42,7 +42,7 @@ public class ClienteServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeCrearUnProductoCorrectamente() {
+    public void sePuedeCrearUnClienteCorrectamente() {
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
 
