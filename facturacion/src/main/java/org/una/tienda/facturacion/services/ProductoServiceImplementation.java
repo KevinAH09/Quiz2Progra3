@@ -13,8 +13,6 @@ import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.entities.Producto;
 import org.una.tienda.facturacion.repositories.ProductoRepository;
 import org.springframework.transaction.annotation.Transactional;
-import org.una.aeropuerto.utils.ConversionLista;
-import org.una.aeropuerto.utils.MapperUtils;
 
 
 /**
