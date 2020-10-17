@@ -79,8 +79,6 @@ public class ProductoServiceImplementationTests {
         Optional<ProductoDTO> productoEncontrado = productoService.findById(productoEjemplo.getId());
 
         if (productoEncontrado != null) {
-//            ProductoDTO producto = productoEncontrado.get();
-//            Assertions.assertTrue(productoEjemplo!=producto);
             fail("El objeto no ha sido eliminado de la BD");
         }else{
             productoEjemplo = null;
