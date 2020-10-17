@@ -32,21 +32,6 @@ public class ProductoServiceImplementation implements IProductoService {
         return (Optional<List<ProductoDTO>>) ConversionLista.findList((ProductoRepository.findAll()), ProductoDTO.class);
     }
 
-//    @Override
-//    public Optional<ProductoDTO> findById(Long id) {
-//        return (Optional<ProductoDTO>) ConversionLista.oneToDto(ProductoRepository.findById(id), ProductoDTO.class);
-//    }
-//    @Override
-//    public ProductoDTO create(ProductoDTO Producto) {
-//        Producto producto = MapperUtils.EntityFromDto(Producto, Producto.class);
-//        producto = ProductoRepository.save(producto);
-//        return MapperUtils.DtoFromEntity(producto, ProductoDTO.class);
-//    }
-    //    @Override
-//    @Transactional
-//    public void delete(Long id) {
-//        ProductoRepository.deleteById(id);
-//    }
     @Override
     public Optional<ProductoDTO> update(ProductoDTO Producto, Long id) {
         if (ProductoRepository.findById(id).isPresent()) {

@@ -40,13 +40,6 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
         return (Optional<FacturaDetalleDTO>) ConversionLista.oneToDto(facturaDetalleRepository.findById(id), FacturaDetalleDTO.class);
     }
 
-//    @Override
-//    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalleDTO) {
-//        FacturaDetalle facturaDetalle = MapperUtils.EntityFromDto(facturaDetalleDTO, FacturaDetalle.class);
-//        facturaDetalle = facturaDetalleRepository.save(facturaDetalle);
-//        return MapperUtils.DtoFromEntity(facturaDetalle, FacturaDetalleDTO.class);
-//    }
-
     @Override
     public Optional<FacturaDetalleDTO> update(FacturaDetalleDTO facturaDetalleDTO, Long id) {
         if (facturaDetalleRepository.findById(id).isPresent()) {
@@ -70,7 +63,6 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
         Optional<ProductoPrecioDTO> productoPrecio = productoPrecioService.findById(facturaDetalle.getProductoId().getId());
 
         if (productoPrecio.isEmpty()) {
-            //TODO:implementar verificar existencia de asignacion de precios
             return null;
         }
         if (facturaDetalle.getDescuentoFinal() > productoPrecio.get().getDescuentoMaximo()) {
