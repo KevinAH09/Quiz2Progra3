@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivo;
 
 /**
  *
@@ -30,8 +32,10 @@ public class FacturaServiceImpletationTests {
     private IFacturaService facturaService;
 
     FacturaDTO facturaEjemplo;
+    FacturaDTO facturaPrueba;
 
     ClienteDTO clienteEjemplo;
+    ClienteDTO clientePrueba;
 
     @Autowired
     private IClienteService clienteService;
@@ -55,10 +59,30 @@ public class FacturaServiceImpletationTests {
             }
         };
     }
+    public void initData() {
+        clientePrueba = new ClienteDTO() {
+            {
+                setDireccion("San Antonio");
+                setEmail("colo7112012@gmail.com");
+                setNombre("Kevin");
+                setTelefono("61358010");
+            }
+        };
+        clientePrueba = clienteService.create(clientePrueba);
+        facturaPrueba = new FacturaDTO() {
+            {
+                {
+                    setDescuentoGeneral(0);
+                    setCaja(0);
+                    setEstado(false);
+                    setClienteId(clientePrueba);
+                }
 
-    
+            }
+        };
+        facturaPrueba = facturaService.create(facturaPrueba);
+    }
 
-    
     @Test
     public void sePuedeCrearUnaFacturaCorrectamente() {
 
@@ -76,7 +100,7 @@ public class FacturaServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnaFacturaCorrectamente() {
+    public void sePuedeModificarUnaFacturaCorrectamente() throws NoModificarInformacionConEstadoInactivo {
 
         facturaEjemplo = facturaService.create(facturaEjemplo);
         facturaEjemplo.setCaja(39393);
@@ -92,6 +116,16 @@ public class FacturaServiceImpletationTests {
         } else {
             fail("No se encontro la información en la BD");
         }
+    }
+
+    @Test
+    public void seEvitaModificarUnaFacturaConEstadoInactivo() {
+        initData();
+        assertThrows(NoModificarInformacionConEstadoInactivo.class,
+                () -> {
+                    facturaService.create(facturaPrueba);
+                }
+        );
     }
 
     @Test

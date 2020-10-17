@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.entities.Factura;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivo;
 import org.una.tienda.facturacion.repositories.FacturaRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
 import org.una.tienda.facturacion.utils.MapperUtils;
@@ -21,27 +22,29 @@ import org.una.tienda.facturacion.utils.MapperUtils;
  * @author Bosco
  */
 @Service
-public class FacturaServiceImplementation implements IFacturaService{
+public class FacturaServiceImplementation implements IFacturaService {
+
     @Autowired
     private FacturaRepository FacturaRepository;
+    @Autowired
+    private IFacturaService facturaService;
 
     @Override
     public Optional<List<FacturaDTO>> findAll() {
         return (Optional<List<FacturaDTO>>) ConversionLista.findList((FacturaRepository.findAll()), FacturaDTO.class);
     }
 
-    @Override
-    public Optional<FacturaDTO> update(FacturaDTO FacturaDTO, Long id) {
-        if (FacturaRepository.findById(id).isPresent()) {
-            Factura Factura = MapperUtils.EntityFromDto(FacturaDTO, Factura.class);
-            Factura = FacturaRepository.save(Factura);
-            return Optional.ofNullable(MapperUtils.DtoFromEntity(Factura, FacturaDTO.class));
-        } else {
-            return null;
-        }
-
-    }
-
+//    @Override
+//    public Optional<FacturaDTO> update(FacturaDTO FacturaDTO, Long id) {
+//        if (FacturaRepository.findById(id).isPresent()) {
+//            Factura Factura = MapperUtils.EntityFromDto(FacturaDTO, Factura.class);
+//            Factura = FacturaRepository.save(Factura);
+//            return Optional.ofNullable(MapperUtils.DtoFromEntity(Factura, FacturaDTO.class));
+//        } else {
+//            return null;
+//        }
+//
+//    }
     private Optional<FacturaDTO> oneToDto(Optional<Factura> one) {
         if (one.isPresent()) {
             FacturaDTO FacturaDTO = MapperUtils.DtoFromEntity(one.get(), FacturaDTO.class);
@@ -71,4 +74,24 @@ public class FacturaServiceImplementation implements IFacturaService{
     public void delete(Long id) {
         FacturaRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional
+    public Optional<FacturaDTO> update(FacturaDTO facturadto, Long id) throws NoModificarInformacionConEstadoInactivo {
+
+        Optional<FacturaDTO> factura = facturaService.findById(facturadto.getId());
+
+        if (factura.isEmpty()) {
+            return null;
+        }
+        System.out.println(factura);
+        if (factura.get().isEstado() == false) {
+            throw new NoModificarInformacionConEstadoInactivo("Se intenta modificar una factura con un estado inactivo");
+        }
+        Factura Factura = MapperUtils.EntityFromDto(facturadto, Factura.class);
+        Factura = FacturaRepository.save(Factura);
+        return Optional.ofNullable(MapperUtils.DtoFromEntity(Factura, FacturaDTO.class));
+
+    }
+
 }
