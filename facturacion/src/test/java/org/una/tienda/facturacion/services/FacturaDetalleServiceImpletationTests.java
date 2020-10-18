@@ -130,7 +130,7 @@ public class FacturaDetalleServiceImpletationTests {
 
     }
 
-    public void initData() throws ProductoConDescuentoMayorAlPermitidoException {
+    public void initData() {
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -235,7 +235,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() throws ProductoConDescuentoMayorAlPermitidoException {
+    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() {
         initData();
         assertThrows(ProductoConDescuentoMayorAlPermitidoException.class,
                 () -> {

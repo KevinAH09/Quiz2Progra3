@@ -60,7 +60,7 @@ public class FacturaServiceImpletationTests {
         };
     }
 
-    public void initData() {
+    public void initData() throws NoModificarInformacionConEstadoInactivo {
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -81,6 +81,10 @@ public class FacturaServiceImpletationTests {
 
             }
         };
+        facturaPrueba=facturaService.create(facturaPrueba);
+        facturaPrueba.setEstado(false);
+        facturaPrueba=facturaService.update(facturaPrueba,facturaPrueba.getId()).get();
+        
     }
 
     @Test
@@ -118,15 +122,7 @@ public class FacturaServiceImpletationTests {
         }
     }
 
-    @Test
-    public void seEvitaModificarUnaFacturaConEstadoInactivo() {
-        initData();
-        assertThrows(NoModificarInformacionConEstadoInactivo.class,
-                () -> {
-                    facturaService.update(facturaPrueba,facturaPrueba.getId());
-                }
-        );
-    }
+   
 
     @Test
     public void sePuedeEliminarUnaFacturaCorrectamente() {
@@ -140,6 +136,16 @@ public class FacturaServiceImpletationTests {
             facturaEjemplo = null;
             Assertions.assertTrue(true);
         }
+    }
+    
+     @Test
+    public void seEvitaModificarUnaFacturaConEstadoInactivo() throws NoModificarInformacionConEstadoInactivo{
+        initData();
+        assertThrows(NoModificarInformacionConEstadoInactivo.class,
+                () -> {
+                    facturaService.update(facturaPrueba,facturaPrueba.getId());
+                }
+        );
     }
 
     @AfterEach

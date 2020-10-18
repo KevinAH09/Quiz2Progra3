@@ -11,8 +11,18 @@ package org.una.tienda.facturacion.exceptions;
  */
 public class NoModificarInformacionConEstadoInactivo extends Exception {
 
-    public NoModificarInformacionConEstadoInactivo(String message) {
-        super(message);
+    private String exception;
+    
+    public NoModificarInformacionConEstadoInactivo(String exception)
+    {
+        this.exception=exception;
     }
+
+    @Override
+    public String getMessage() {
+       return this.exception;    
+    }
+
+   
 
 }

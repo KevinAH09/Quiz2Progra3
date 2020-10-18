@@ -9,9 +9,19 @@ package org.una.tienda.facturacion.exceptions;
  *
  * @author Bosco
  */
-public class ClienteConTelefonoCorreoDireccionException  extends Exception{
+public class ClienteConTelefonoCorreoDireccionException extends Exception {
 
-    public ClienteConTelefonoCorreoDireccionException(String message) {
-        super(message);
+    private String exception;
+
+    public ClienteConTelefonoCorreoDireccionException(String exception) {
+        this.exception = exception;
     }
+
+    @Override
+    public String getMessage() {
+       return this.exception;
+    }
+
+    
+    
 }
