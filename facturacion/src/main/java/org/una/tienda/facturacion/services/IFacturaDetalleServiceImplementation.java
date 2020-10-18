@@ -13,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
+import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 import org.una.tienda.facturacion.entities.FacturaDetalle;
+import org.una.tienda.facturacion.entities.ProductoExistencia;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturaConProductoPrecioCeroException;
+import org.una.tienda.facturacion.exceptions.NoCrearFacturasConCantidadCeroException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 import org.una.tienda.facturacion.repositories.FacturaDetalleRepository;
@@ -35,6 +38,8 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
     private IFacturaDetalleService facturaDetalleService;
     @Autowired
     private IProductoPrecioService productoPrecioService;
+    @Autowired
+    private IProductoExistenciaService productoExistenciaService;
 
     @Override
     public Optional<List<FacturaDetalleDTO>> findAll() {
@@ -53,21 +58,25 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
 
     @Override
     @Transactional
-    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException,NoCrearFacturaConProductoPrecioCeroException {
+    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException,NoCrearFacturaConProductoPrecioCeroException,NoCrearFacturasConCantidadCeroException {
 
         Optional<ProductoPrecioDTO> productoPrecio = productoPrecioService.findById(facturaDetalle.getProductoId().getId());
+        
+         Optional<ProductoExistenciaDTO> productoExistencia = productoExistenciaService.findById(facturaDetalle.getProductoId().getId());
 
         if (productoPrecio.isEmpty()) {
-            System.out.println("-------------------------------------------------------------- ENTROOOOOOOO" + productoPrecio.get().getPrecioColones());
             return null;
         }
-        System.out.println("--------------------------------------------------------------" + productoPrecio.get().getPrecioColones());
-        System.out.println("-------------------------------------------------------------- " +Double.valueOf("0.0"));
 
         if (productoPrecio.get().getPrecioColones()== Double.valueOf("0.0")) {
 
             throw new NoCrearFacturaConProductoPrecioCeroException("Para que no se facture sobre productos con precio cero");
 
+        }
+        
+        if(productoExistencia.get().getCantidad()==Double.valueOf("0.0"))
+        {
+             throw new NoCrearFacturasConCantidadCeroException("Para que no se facture sobre productos con cantidad cero");
         }
 
         System.out.println(productoPrecio);
