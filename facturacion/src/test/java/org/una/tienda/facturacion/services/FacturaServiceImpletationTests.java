@@ -18,7 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
-import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
+import org.una.tienda.facturacion.exceptions.ClienteSinCorreoException;
+import org.una.tienda.facturacion.exceptions.ClienteSinDireccionException;
+import org.una.tienda.facturacion.exceptions.ClienteSinTelefonoException;
 import org.una.tienda.facturacion.exceptions.NoGuardarInformacionFacturaConClienteInactivoException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionClienteConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
@@ -47,7 +49,7 @@ public class FacturaServiceImpletationTests {
     private IClienteService clienteService;
 
     @BeforeEach
-    public void setup() throws ClienteConTelefonoCorreoDireccionException {
+    public void setup() throws ClienteSinDireccionException, ClienteSinTelefonoException, ClienteSinCorreoException {
         clienteEjemplo = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -66,7 +68,7 @@ public class FacturaServiceImpletationTests {
         };
     }
 
-    public void initData() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionProductoExistenciaConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException{
+    public void initData() throws ClienteSinDireccionException, NoModificarInformacionProductoExistenciaConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException, ClienteSinTelefonoException, ClienteSinCorreoException{
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -93,7 +95,7 @@ public class FacturaServiceImpletationTests {
 
     }
     
-     public void initDataClienteInactivo() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoModificarInformacionClienteConEstadoInactivoException{
+     public void initDataClienteInactivo() throws ClienteSinDireccionException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoModificarInformacionClienteConEstadoInactivoException, ClienteSinTelefonoException, ClienteSinCorreoException{
         clientePruebaClienteInactivo = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -170,7 +172,7 @@ public class FacturaServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaModificarUnaFacturaConEstadoInactivo() throws NoModificarInformacionEnFacturaConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionProductoExistenciaConEstadoInactivoException, NoModificarInformacionFacturaDetalleConEstadoInactivoException {
+    public void seEvitaModificarUnaFacturaConEstadoInactivo() throws NoModificarInformacionEnFacturaConEstadoInactivoException, ClienteSinDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionProductoExistenciaConEstadoInactivoException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, ClienteSinTelefonoException, ClienteSinCorreoException {
         initData();
         assertThrows(NoModificarInformacionEnFacturaConEstadoInactivoException.class,
                 () -> {
@@ -179,7 +181,7 @@ public class FacturaServiceImpletationTests {
         );
     }
     @Test
-    public void seEvitaGuardarInformacionFacturaConClienteInactivo() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionClienteConEstadoInactivoException, NoModificarInformacionFacturaDetalleConEstadoInactivoException {
+    public void seEvitaGuardarInformacionFacturaConClienteInactivo() throws ClienteSinDireccionException, NoModificarInformacionClienteConEstadoInactivoException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, ClienteSinTelefonoException, ClienteSinCorreoException {
         initDataClienteInactivo();
         assertThrows(NoGuardarInformacionFacturaConClienteInactivoException.class,
                 () -> {

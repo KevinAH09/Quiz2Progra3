@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.entities.Cliente;
-import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
+import org.una.tienda.facturacion.exceptions.ClienteSinCorreoException;
+import org.una.tienda.facturacion.exceptions.ClienteSinDireccionException;
+import org.una.tienda.facturacion.exceptions.ClienteSinTelefonoException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionClienteConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
@@ -46,16 +48,16 @@ public class IClienteServiceImplementation implements IClienteService {
     }
 
     @Override
-    public ClienteDTO create(ClienteDTO clienteDTO) throws ClienteConTelefonoCorreoDireccionException {
+    public ClienteDTO create(ClienteDTO clienteDTO) throws ClienteSinDireccionException,ClienteSinTelefonoException,ClienteSinCorreoException {
         if (clienteDTO.getTelefono() == null) {
-            throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin telefono asignado");
+            throw new ClienteSinTelefonoException("Se intenta guardar un cliente sin telefono asignado");
         }
         if (clienteDTO.getDireccion() == null) {
-            throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin direccion asignada");
+            throw new ClienteSinDireccionException("Se intenta guardar un cliente sin direccion asignada");
 
         }
         if (clienteDTO.getEmail() == null) {
-            throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin correo asignado");
+            throw new ClienteSinCorreoException("Se intenta guardar un cliente sin correo asignado");
 
         }
         Cliente cliente = MapperUtils.EntityFromDto(clienteDTO, Cliente.class);

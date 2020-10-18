@@ -8,7 +8,9 @@ package org.una.tienda.facturacion.services;
 import java.util.List;
 import java.util.Optional;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
-import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
+import org.una.tienda.facturacion.exceptions.ClienteSinCorreoException;
+import org.una.tienda.facturacion.exceptions.ClienteSinDireccionException;
+import org.una.tienda.facturacion.exceptions.ClienteSinTelefonoException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionClienteConEstadoInactivoException;
 
 /**
@@ -21,7 +23,7 @@ public interface IClienteService {
 
     public Optional<ClienteDTO> findById(Long id);
 
-    public ClienteDTO create(ClienteDTO cliente) throws ClienteConTelefonoCorreoDireccionException;
+    public ClienteDTO create(ClienteDTO cliente) throws ClienteSinDireccionException,ClienteSinTelefonoException,ClienteSinCorreoException;
 
     public Optional<ClienteDTO> update(ClienteDTO cliente, Long id) throws NoModificarInformacionClienteConEstadoInactivoException;
 

@@ -9,11 +9,10 @@ package org.una.tienda.facturacion.exceptions;
  *
  * @author Bosco
  */
-public class ClienteConTelefonoCorreoDireccionException extends Exception {
-
+public class ClienteSinTelefonoException extends Exception{
     private String exception;
 
-    public ClienteConTelefonoCorreoDireccionException(String exception) {
+    public ClienteSinTelefonoException(String exception) {
         this.exception = exception;
     }
 
@@ -21,7 +20,4 @@ public class ClienteConTelefonoCorreoDireccionException extends Exception {
     public String getMessage() {
        return this.exception;
     }
-
-    
-    
 }
