@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 
 /**
  *
@@ -23,26 +25,28 @@ import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
  */
 @SpringBootTest
 public class ProductoPrecioServiceImpletationTests {
+
     @Autowired
     private IProductoPrecioService productoPrecioService;
-    
+
     @Autowired
     private IProductoService productoService;
-    
 
     ProductoDTO productoEjemplo;
-    
+    ProductoDTO productoPrueba;
+
     ProductoPrecioDTO productoPrecioEjemplo;
+    ProductoPrecioDTO productoPrecioPrueba;
 
     @BeforeEach
     public void setup() {
-         productoEjemplo = new ProductoDTO() {
+        productoEjemplo = new ProductoDTO() {
             {
                 setDescripcion("Producto De Ejemplo");
                 setImpuesto(0.10);
             }
         };
-          productoEjemplo = productoService.create(productoEjemplo);
+        productoEjemplo = productoService.create(productoEjemplo);
         productoPrecioEjemplo = new ProductoPrecioDTO() {
             {
                 setDescuentoMaximo(0);
@@ -53,9 +57,31 @@ public class ProductoPrecioServiceImpletationTests {
         };
     }
 
+    public void initData() throws NoModificarInformacionConEstadoInactivoException {
+        productoPrueba = new ProductoDTO() {
+            {
+                setDescripcion("Producto De Ejemplo");
+                setImpuesto(0.10);
+            }
+        };
+        productoPrueba = productoService.create(productoPrueba);
+        productoPrecioPrueba = new ProductoPrecioDTO() {
+            {
+                setDescuentoMaximo(0);
+                setDescuentoPromocional(0);
+                setPrecioColones(200);
+                setProductosId(productoPrueba);
+            }
+        };
+        productoPrecioPrueba = productoPrecioService.create(productoPrecioPrueba);
+        productoPrecioPrueba.setEstado(false);
+        productoPrecioPrueba = productoPrecioService.update(productoPrecioPrueba, productoPrecioPrueba.getId()).get();
+
+    }
+
     @Test
     public void sePuedeCrearUnProductoPrecioCorrectamente() {
- 
+
         productoPrecioEjemplo = productoPrecioService.create(productoPrecioEjemplo);
 
         Optional<ProductoPrecioDTO> ProductoPrecioEncontrado = productoPrecioService.findById(productoPrecioEjemplo.getId());
@@ -68,9 +94,9 @@ public class ProductoPrecioServiceImpletationTests {
             fail("No se encontro la información en la BD");
         }
     }
-    
-     @Test
-    public void sePuedeModificarUnProductoPrecioCorrectamente() {
+
+    @Test
+    public void sePuedeModificarUnProductoPrecioCorrectamente() throws NoModificarInformacionConEstadoInactivoException {
 
         productoPrecioEjemplo = productoPrecioService.create(productoPrecioEjemplo);
         productoPrecioEjemplo.setDescuentoPromocional(0);
@@ -88,6 +114,7 @@ public class ProductoPrecioServiceImpletationTests {
             fail("No se encontro la información en la BD");
         }
     }
+
     @Test
     public void sePuedeEliminarUnProductoPrecioCorrectamente() {
         productoPrecioEjemplo = productoPrecioService.create(productoPrecioEjemplo);
@@ -96,10 +123,20 @@ public class ProductoPrecioServiceImpletationTests {
 
         if (productoPrecioEncontrado != null) {
             fail("El objeto no ha sido eliminado de la BD");
-        }else{
+        } else {
             productoPrecioEjemplo = null;
             Assertions.assertTrue(true);
         }
+    }
+
+    @Test
+    public void seEvitaModificarProductoPrecioConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException {
+        initData();
+        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+                () -> {
+                    productoPrecioService.update(productoPrecioPrueba, productoPrecioPrueba.getId());
+                }
+        );
     }
 
     @AfterEach

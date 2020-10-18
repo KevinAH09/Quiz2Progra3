@@ -8,7 +8,7 @@ package org.una.tienda.facturacion.services;
 import java.util.List;
 import java.util.Optional;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivo;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 
 /**
  *
@@ -23,5 +23,5 @@ public interface IFacturaService {
     
     public FacturaDTO create(FacturaDTO factura);
 
-    public Optional<FacturaDTO> update(FacturaDTO factura, Long id)throws NoModificarInformacionConEstadoInactivo;
+    public Optional<FacturaDTO> update(FacturaDTO factura, Long id)throws NoModificarInformacionConEstadoInactivoException;
 }

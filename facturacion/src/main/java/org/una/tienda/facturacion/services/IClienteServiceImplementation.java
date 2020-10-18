@@ -11,10 +11,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.entities.Cliente;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 import org.una.tienda.facturacion.repositories.ClienteRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
@@ -29,6 +31,8 @@ public class IClienteServiceImplementation implements IClienteService {
 
     @Autowired
     private ClienteRepository clienteRepository;
+    @Autowired
+    private IClienteService clienteService;
 
     @Override
     public Optional<List<ClienteDTO>> findAll() {
@@ -59,20 +63,25 @@ public class IClienteServiceImplementation implements IClienteService {
     }
 
     @Override
-    public Optional<ClienteDTO> update(ClienteDTO clienteDto, Long id) {
-        if (clienteRepository.findById(id).isPresent()) {
-
-            Cliente cliente = MapperUtils.EntityFromDto(clienteDto, Cliente.class);
-            cliente = clienteRepository.save(cliente);
-            return Optional.ofNullable(MapperUtils.DtoFromEntity(cliente, ClienteDTO.class));
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public void delete(Long id) {
         clienteRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional
+    public Optional<ClienteDTO> update(ClienteDTO cliente1, Long id) throws NoModificarInformacionConEstadoInactivoException {
+
+        Optional<ClienteDTO> factura = clienteService.findById(cliente1.getId());
+
+        if (factura.isEmpty()) {
+            return null;
+        }
+        System.out.println(factura);
+        if (factura.get().isEstado() == false) {
+            throw new NoModificarInformacionConEstadoInactivoException("Se intenta modificar una factura detalle con un estado inactivo");
+        }
+        Cliente cliente = MapperUtils.EntityFromDto(cliente1, Cliente.class);
+        cliente = clienteRepository.save(cliente);
+        return Optional.ofNullable(MapperUtils.DtoFromEntity(cliente, ClienteDTO.class));
+    }
 }

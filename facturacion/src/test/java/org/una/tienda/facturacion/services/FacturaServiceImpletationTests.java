@@ -19,7 +19,7 @@ import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivo;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 
 /**
  *
@@ -60,7 +60,7 @@ public class FacturaServiceImpletationTests {
         };
     }
 
-    public void initData() throws NoModificarInformacionConEstadoInactivo, ClienteConTelefonoCorreoDireccionException  {
+    public void initData() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException{
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -81,10 +81,10 @@ public class FacturaServiceImpletationTests {
 
             }
         };
-        facturaPrueba=facturaService.create(facturaPrueba);
+        facturaPrueba = facturaService.create(facturaPrueba);
         facturaPrueba.setEstado(false);
-        facturaPrueba=facturaService.update(facturaPrueba,facturaPrueba.getId()).get();
-        
+        facturaPrueba = facturaService.update(facturaPrueba, facturaPrueba.getId()).get();
+
     }
 
     @Test
@@ -104,7 +104,7 @@ public class FacturaServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnaFacturaCorrectamente() throws NoModificarInformacionConEstadoInactivo {
+    public void sePuedeModificarUnaFacturaCorrectamente() throws NoModificarInformacionConEstadoInactivoException {
 
         facturaEjemplo = facturaService.create(facturaEjemplo);
         facturaEjemplo.setCaja(39393);
@@ -122,8 +122,6 @@ public class FacturaServiceImpletationTests {
         }
     }
 
-   
-
     @Test
     public void sePuedeEliminarUnaFacturaCorrectamente() {
         facturaEjemplo = facturaService.create(facturaEjemplo);
@@ -137,13 +135,13 @@ public class FacturaServiceImpletationTests {
             Assertions.assertTrue(true);
         }
     }
-    
-     @Test
-    public void seEvitaModificarUnaFacturaConEstadoInactivo() throws NoModificarInformacionConEstadoInactivo, ClienteConTelefonoCorreoDireccionException{
+
+    @Test
+    public void seEvitaModificarUnaFacturaConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
         initData();
-        assertThrows(NoModificarInformacionConEstadoInactivo.class,
+        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
                 () -> {
-                    facturaService.update(facturaPrueba,facturaPrueba.getId());
+                    facturaService.update(facturaPrueba, facturaPrueba.getId());
                 }
         );
     }

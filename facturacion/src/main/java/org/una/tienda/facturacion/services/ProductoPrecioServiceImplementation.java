@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 import org.una.tienda.facturacion.entities.ProductoPrecio;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.repositories.ProductoPrecioRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
 import org.una.tienda.facturacion.utils.MapperUtils;
@@ -21,25 +22,16 @@ import org.una.tienda.facturacion.utils.MapperUtils;
  * @author Bosco
  */
 @Service
-public class ProductoPrecioServiceImplementation implements IProductoPrecioService{
+public class ProductoPrecioServiceImplementation implements IProductoPrecioService {
+
     @Autowired
     private ProductoPrecioRepository ProductoPrecioRepository;
+    @Autowired
+    private IProductoPrecioService ProductoPrecioService;
 
     @Override
     public Optional<List<ProductoPrecioDTO>> findAll() {
         return (Optional<List<ProductoPrecioDTO>>) ConversionLista.findList((ProductoPrecioRepository.findAll()), ProductoPrecioDTO.class);
-    }
-
-    @Override
-    public Optional<ProductoPrecioDTO> update(ProductoPrecioDTO ProductoPrecioDTO, Long id) {
-        if (ProductoPrecioRepository.findById(id).isPresent()) {
-            ProductoPrecio ProductoPrecio = MapperUtils.EntityFromDto(ProductoPrecioDTO, ProductoPrecio.class);
-            ProductoPrecio = ProductoPrecioRepository.save(ProductoPrecio);
-            return Optional.ofNullable(MapperUtils.DtoFromEntity(ProductoPrecio, ProductoPrecioDTO.class));
-        } else {
-            return null;
-        }
-
     }
 
     private Optional<ProductoPrecioDTO> oneToDto(Optional<ProductoPrecio> one) {
@@ -70,5 +62,24 @@ public class ProductoPrecioServiceImplementation implements IProductoPrecioServi
     @Transactional
     public void delete(Long id) {
         ProductoPrecioRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public Optional<ProductoPrecioDTO> update(ProductoPrecioDTO ProductoPrecio1, Long id) throws NoModificarInformacionConEstadoInactivoException {
+
+        Optional<ProductoPrecioDTO> product = ProductoPrecioService.findById(ProductoPrecio1.getId());
+
+        if (product.isEmpty()) {
+            return null;
+        }
+        System.out.println(product);
+        if (product.get().isEstado() == false) {
+            throw new NoModificarInformacionConEstadoInactivoException("Se intenta modificar un producto con un estado inactivo");
+        }
+
+        ProductoPrecio ProductoPrecio = MapperUtils.EntityFromDto(ProductoPrecio1, ProductoPrecio.class);
+        ProductoPrecio = ProductoPrecioRepository.save(ProductoPrecio);
+        return Optional.ofNullable(MapperUtils.DtoFromEntity(ProductoPrecio, ProductoPrecioDTO.class));
     }
 }

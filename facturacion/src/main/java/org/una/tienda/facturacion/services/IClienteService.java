@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 
 /**
  *
@@ -22,7 +23,7 @@ public interface IClienteService {
     
     public ClienteDTO create(ClienteDTO cliente) throws ClienteConTelefonoCorreoDireccionException;
 
-    public Optional<ClienteDTO> update(ClienteDTO cliente, Long id);
+    public Optional<ClienteDTO> update(ClienteDTO cliente, Long id)throws NoModificarInformacionConEstadoInactivoException;
     
     public void delete(Long id);
 }

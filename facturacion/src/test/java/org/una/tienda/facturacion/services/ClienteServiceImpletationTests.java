@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 
 /**
  *
@@ -53,8 +54,23 @@ public class ClienteServiceImpletationTests {
         };
     }
 
+    public void initData2() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, ClienteConTelefonoCorreoDireccionException {
+        clientePrueba = new ClienteDTO() {
+            {
+                setDireccion("San Antonio");
+                setEmail("colo7112012@gmail.com");
+                setNombre("Kevin");
+                setTelefono("61358010");
+            }
+        };
+        clientePrueba = clienteService.create(clientePrueba);
+        clientePrueba.setEstado(false);
+        clientePrueba = clienteService.update(clientePrueba, clientePrueba.getId()).get();
+
+    }
+
     @Test
-    public void sePuedeCrearUnClienteCorrectamente()  throws ClienteConTelefonoCorreoDireccionException{
+    public void sePuedeCrearUnClienteCorrectamente() throws ClienteConTelefonoCorreoDireccionException {
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
 
@@ -70,7 +86,7 @@ public class ClienteServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnClienteCorrectamente() throws ClienteConTelefonoCorreoDireccionException {
+    public void sePuedeModificarUnClienteCorrectamente() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException {
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
         clienteEjemplo.setDireccion("cliente modificado");
@@ -104,12 +120,22 @@ public class ClienteServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaClienteSinTelefonoDireccionCorreo() {
+    public void seEvitaClienteSinTelefonoDireccionCorreo() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException {
         initData();
         assertThrows(ClienteConTelefonoCorreoDireccionException.class,
                 () -> {
-                     System.out.println("org.una.tienda.facturacion.services.ClienteServiceImpletationTests.seEvitaClienteSinTelefonoDireccionCorreo()"+clientePrueba);
+                    System.out.println("org.una.tienda.facturacion.services.ClienteServiceImpletationTests.seEvitaClienteSinTelefonoDireccionCorreo()" + clientePrueba);
                     clienteService.create(clientePrueba);
+                }
+        );
+    }
+
+    @Test
+    public void seEvitaModificarUnClienteConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
+        initData2();
+        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+                () -> {
+                    clienteService.update(clientePrueba, clientePrueba.getId());
                 }
         );
     }

@@ -8,6 +8,7 @@ package org.una.tienda.facturacion.services;
 import java.util.List;
 import java.util.Optional;
 import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 
 /**
  *
@@ -20,7 +21,7 @@ public interface IProductoExistenciaService {
     
     public ProductoExistenciaDTO create(ProductoExistenciaDTO ProductoExistencia);
 
-    public Optional<ProductoExistenciaDTO> update(ProductoExistenciaDTO ProductoExistencia, Long id);
+    public Optional<ProductoExistenciaDTO> update(ProductoExistenciaDTO ProductoExistencia, Long id)throws NoModificarInformacionConEstadoInactivoException;
     
     public void delete(Long id);
 }

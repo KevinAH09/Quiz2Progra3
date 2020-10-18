@@ -9,12 +9,14 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 
 /**
  *
@@ -27,6 +29,7 @@ public class ProductoServiceImplementationTests {
     private IProductoService productoService;
 
     ProductoDTO productoEjemplo;
+    ProductoDTO productoPrueba;
 
     @BeforeEach
     public void setup() {
@@ -36,6 +39,19 @@ public class ProductoServiceImplementationTests {
                 setImpuesto(0.10);
             }
         };
+    }
+
+    public void initData() throws NoModificarInformacionConEstadoInactivoException {
+        productoPrueba = new ProductoDTO() {
+            {
+                setDescripcion("Producto De Ejemplo");
+                setImpuesto(0.10);
+            }
+        };
+        productoPrueba = productoService.create(productoPrueba);
+        productoPrueba.setEstado(false);
+        productoPrueba = productoService.update(productoPrueba, productoPrueba.getId()).get();
+
     }
 
     @Test
@@ -56,7 +72,7 @@ public class ProductoServiceImplementationTests {
     }
 
     @Test
-    public void sePuedeModificarUnProductoCorrectamente() {
+    public void sePuedeModificarUnProductoCorrectamente() throws NoModificarInformacionConEstadoInactivoException {
 
         productoEjemplo = productoService.create(productoEjemplo);
         productoEjemplo.setDescripcion("Producto modificado");
@@ -72,6 +88,7 @@ public class ProductoServiceImplementationTests {
             fail("No se encontro la información en la BD");
         }
     }
+
     @Test
     public void sePuedeEliminarUnProductoCorrectamente() {
         productoEjemplo = productoService.create(productoEjemplo);
@@ -80,16 +97,29 @@ public class ProductoServiceImplementationTests {
 
         if (productoEncontrado != null) {
             fail("El objeto no ha sido eliminado de la BD");
-        }else{
+        } else {
             productoEjemplo = null;
             Assertions.assertTrue(true);
         }
     }
 
+    @Test
+    public void seEvitaModificarProductoConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException {
+        initData();
+        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+                () -> {
+                    productoService.update(productoPrueba, productoPrueba.getId());
+                }
+        );
+    }
+
     @AfterEach
     public void tearDown() {
         if (productoEjemplo != null) {
-            productoService.delete(productoEjemplo.getId());
+            if (productoEjemplo.getId() != null) {
+               productoService.delete(productoEjemplo.getId());
+            }
+            
             productoEjemplo = null;
         }
 

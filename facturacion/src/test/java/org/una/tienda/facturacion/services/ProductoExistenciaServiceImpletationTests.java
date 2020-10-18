@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 
 /**
  *
@@ -23,17 +25,19 @@ import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
  */
 @SpringBootTest
 public class ProductoExistenciaServiceImpletationTests {
-    
-     @Autowired
+
+    @Autowired
     private IProductoService productoService;
 
     @Autowired
     private IProductoExistenciaService productoExistenciaService;
 
     ProductoExistenciaDTO productoExistenciaEjemplo;
+    ProductoExistenciaDTO productoExistenciaPrueba;
 
-     ProductoDTO productoEjemplo;
-    
+    ProductoDTO productoEjemplo;
+    ProductoDTO productoPrueba;
+
     @BeforeEach
     public void setup() {
         productoEjemplo = new ProductoDTO() {
@@ -43,12 +47,32 @@ public class ProductoExistenciaServiceImpletationTests {
             }
         };
         productoEjemplo = productoService.create(productoEjemplo);
-        productoExistenciaEjemplo = new ProductoExistenciaDTO(){
+        productoExistenciaEjemplo = new ProductoExistenciaDTO() {
             {
                 setCantidad(200);
                 setProductosId(productoEjemplo);
             }
         };
+    }
+
+    public void initData() throws NoModificarInformacionConEstadoInactivoException {
+         productoPrueba = new ProductoDTO() {
+            {
+                setDescripcion("Producto De Ejemplo");
+                setImpuesto(0.10);
+            }
+        };
+        productoPrueba = productoService.create(productoPrueba);
+        productoExistenciaPrueba = new ProductoExistenciaDTO() {
+            {
+                setCantidad(200);
+                setProductosId(productoPrueba);
+            }
+        };
+        productoExistenciaPrueba = productoExistenciaService.create(productoExistenciaPrueba);
+        productoExistenciaPrueba.setEstado(false);
+        productoExistenciaPrueba = productoExistenciaService.update(productoExistenciaPrueba, productoExistenciaPrueba.getId()).get();
+
     }
 
     @Test
@@ -66,8 +90,9 @@ public class ProductoExistenciaServiceImpletationTests {
             fail("No se encontro la información en la BD");
         }
     }
+
     @Test
-    public void sePuedeModificarUnProductoExistenciaCorrectamente() {
+    public void sePuedeModificarUnProductoExistenciaCorrectamente() throws NoModificarInformacionConEstadoInactivoException {
 
         productoExistenciaEjemplo = productoExistenciaService.create(productoExistenciaEjemplo);
         productoExistenciaEjemplo.setCantidad(39393);
@@ -83,6 +108,7 @@ public class ProductoExistenciaServiceImpletationTests {
             fail("No se encontro la información en la BD");
         }
     }
+
     @Test
     public void sePuedeEliminarUnProductoExistenciaCorrectamente() {
         productoExistenciaEjemplo = productoExistenciaService.create(productoExistenciaEjemplo);
@@ -91,10 +117,20 @@ public class ProductoExistenciaServiceImpletationTests {
 
         if (productoEncontrado.isPresent()) {
             fail("El objeto no ha sido eliminado de la BD");
-        }else{
+        } else {
             productoExistenciaEjemplo = null;
             Assertions.assertTrue(true);
         }
+    }
+
+    @Test
+    public void seEvitaModificarProductoEnExistenciaConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException {
+        initData();
+        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+                () -> {
+                    productoExistenciaService.update(productoExistenciaPrueba, productoExistenciaPrueba.getId());
+                }
+        );
     }
 
     @AfterEach

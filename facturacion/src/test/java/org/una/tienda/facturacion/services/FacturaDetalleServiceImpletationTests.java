@@ -22,6 +22,7 @@ import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 
 /**
@@ -130,7 +131,7 @@ public class FacturaDetalleServiceImpletationTests {
 
     }
 
-    public void initData() throws ClienteConTelefonoCorreoDireccionException {
+    public void initData() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -148,7 +149,10 @@ public class FacturaDetalleServiceImpletationTests {
 
             }
         };
+
         facturaPrueba = facturaService.create(facturaPrueba);
+        facturaPrueba.setEstado(false);
+        facturaPrueba = facturaService.update(facturaPrueba, facturaPrueba.getId()).get();
 
         productoPrueba = new ProductoDTO() {
             {
@@ -201,7 +205,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException {
+    public void sePuedeModificarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException, NoModificarInformacionConEstadoInactivoException {
 
         facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
         facturaDetalleEjemplo.setCantidad(39393);
@@ -235,11 +239,21 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() throws ClienteConTelefonoCorreoDireccionException {
+    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
         initData();
         assertThrows(ProductoConDescuentoMayorAlPermitidoException.class,
                 () -> {
                     facturaDetalleService.create(facturaDetallePrueba);
+                }
+        );
+    }
+
+    @Test
+    public void seEvitaModificarUnaFacturaDetalleConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
+        initData();
+        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+                () -> {
+                    facturaService.update(facturaPrueba, facturaPrueba.getId());
                 }
         );
     }
@@ -256,3 +270,4 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
 }
+

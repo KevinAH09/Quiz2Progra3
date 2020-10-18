@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 import org.una.tienda.facturacion.entities.FacturaDetalle;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 import org.una.tienda.facturacion.repositories.FacturaDetalleRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
@@ -28,6 +29,8 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
     @Autowired
     private FacturaDetalleRepository facturaDetalleRepository;
     @Autowired
+    private IFacturaDetalleService facturaDetalleService;
+    @Autowired
     private IProductoPrecioService productoPrecioService;
 
     @Override
@@ -41,24 +44,13 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
     }
 
     @Override
-    public Optional<FacturaDetalleDTO> update(FacturaDetalleDTO facturaDetalleDTO, Long id) {
-        if (facturaDetalleRepository.findById(id).isPresent()) {
-            FacturaDetalle facturaDetalle = MapperUtils.EntityFromDto(facturaDetalleDTO, FacturaDetalle.class);
-            facturaDetalle = facturaDetalleRepository.save(facturaDetalle);
-            return Optional.ofNullable(MapperUtils.DtoFromEntity(facturaDetalle, FacturaDetalleDTO.class));
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public void delete(Long id) {
         facturaDetalleRepository.deleteById(id);
     }
 
     @Override
     @Transactional
-    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException{
+    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException {
 
         Optional<ProductoPrecioDTO> productoPrecio = productoPrecioService.findById(facturaDetalle.getProductoId().getId());
 
@@ -74,4 +66,22 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
         return MapperUtils.DtoFromEntity(usuario, FacturaDetalleDTO.class);
     }
 
+    @Override
+    @Transactional
+    public Optional<FacturaDetalleDTO> update(FacturaDetalleDTO facturaDetalle, Long id) throws NoModificarInformacionConEstadoInactivoException {
+
+        Optional<FacturaDetalleDTO> factura = facturaDetalleService.findById(facturaDetalle.getId());
+
+        if (factura.isEmpty()) {
+            return null;
+        }
+        System.out.println(factura);
+        if (factura.get().isEstado() == false) {
+            throw new NoModificarInformacionConEstadoInactivoException("Se intenta modificar una factura detalle con un estado inactivo");
+        }
+        FacturaDetalle facturaDetalle1 = MapperUtils.EntityFromDto(facturaDetalle, FacturaDetalle.class);
+        facturaDetalle1 = facturaDetalleRepository.save(facturaDetalle1);
+        return Optional.ofNullable(MapperUtils.DtoFromEntity(facturaDetalle1, FacturaDetalleDTO.class));
+
+    }
 }

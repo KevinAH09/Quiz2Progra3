@@ -13,9 +13,9 @@ import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.entities.Producto;
 import org.una.tienda.facturacion.repositories.ProductoRepository;
 import org.springframework.transaction.annotation.Transactional;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.utils.ConversionLista;
 import org.una.tienda.facturacion.utils.MapperUtils;
-
 
 /**
  *
@@ -26,22 +26,12 @@ public class ProductoServiceImplementation implements IProductoService {
 
     @Autowired
     private ProductoRepository ProductoRepository;
+    @Autowired
+    private IProductoService ProductoService;
 
     @Override
     public Optional<List<ProductoDTO>> findAll() {
         return (Optional<List<ProductoDTO>>) ConversionLista.findList((ProductoRepository.findAll()), ProductoDTO.class);
-    }
-
-    @Override
-    public Optional<ProductoDTO> update(ProductoDTO Producto, Long id) {
-        if (ProductoRepository.findById(id).isPresent()) {
-            Producto producto = MapperUtils.EntityFromDto(Producto, Producto.class);
-            producto = ProductoRepository.save(producto);
-            return Optional.ofNullable(MapperUtils.DtoFromEntity(producto, ProductoDTO.class));
-        } else {
-            return null;
-        }
-
     }
 
     private Optional<ProductoDTO> oneToDto(Optional<Producto> one) {
@@ -74,4 +64,22 @@ public class ProductoServiceImplementation implements IProductoService {
         ProductoRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional
+    public Optional<ProductoDTO> update(ProductoDTO Producto, Long id) throws NoModificarInformacionConEstadoInactivoException {
+
+        Optional<ProductoDTO> product = ProductoService.findById(Producto.getId());
+
+        if (product.isEmpty()) {
+            return null;
+        }
+        System.out.println(product);
+        if (product.get().isEstado() == false) {
+            throw new NoModificarInformacionConEstadoInactivoException("Se intenta modificar un producto con un estado inactivo");
+        }
+        Producto producto = MapperUtils.EntityFromDto(Producto, Producto.class);
+        producto = ProductoRepository.save(producto);
+        return Optional.ofNullable(MapperUtils.DtoFromEntity(producto, ProductoDTO.class));
+
+    }
 }
