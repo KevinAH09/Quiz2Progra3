@@ -187,6 +187,8 @@ public class FacturaDetalleServiceImpletationTests {
         };
         productoPrecioPrueba = productoPrecioService.create(productoPrecioPrueba);
     }
+    
+    
 
     @Test
     public void sePuedeCrearUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException {
@@ -257,6 +259,16 @@ public class FacturaDetalleServiceImpletationTests {
                 }
         );
     }
+    
+//    @Test
+//    public void seEvitaModificarUnaFacturaDetalleConPrecioMayorACero() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
+//        initData1();
+//        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+//                () -> {
+//                    facturaDetalleService.create(facturaDetallePrueba);
+//                }
+//        );
+//    }
 
     @AfterEach
     public void tearDown() {
