@@ -25,52 +25,34 @@ import org.una.tienda.facturacion.utils.MapperUtils;
  * @author colo7
  */
 @Service
-public class IClienteServiceImplementation implements IClienteService{
+public class IClienteServiceImplementation implements IClienteService {
+
     @Autowired
     private ClienteRepository clienteRepository;
+
     @Override
     public Optional<List<ClienteDTO>> findAll() {
-      return (Optional<List<ClienteDTO>>) ConversionLista.findList((clienteRepository.findAll()), ClienteDTO.class);
+        return (Optional<List<ClienteDTO>>) ConversionLista.findList((clienteRepository.findAll()), ClienteDTO.class);
     }
 
     @Override
     public Optional<ClienteDTO> findById(Long id) {
-       return (Optional<ClienteDTO>) ConversionLista.oneToDto(clienteRepository.findById(id), ClienteDTO.class);
+        return (Optional<ClienteDTO>) ConversionLista.oneToDto(clienteRepository.findById(id), ClienteDTO.class);
     }
 
     @Override
-    public ClienteDTO create(ClienteDTO clienteDTO)
-    {
-        
-        if(clienteDTO.getTelefono().isEmpty())
-        {
-            try {
-                throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin telefono asignado");
-            } catch (ClienteConTelefonoCorreoDireccionException ex) {
-                Logger.getLogger(IClienteServiceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
+    public ClienteDTO create(ClienteDTO clienteDTO) throws ClienteConTelefonoCorreoDireccionException {
+        if (clienteDTO.getTelefono() == null) {
+            throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin telefono asignado");
         }
-        if(clienteDTO.getDireccion().isEmpty())
-        {
-            try {
-                throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin direccion asignada");
-            } catch (ClienteConTelefonoCorreoDireccionException ex) {
-                Logger.getLogger(IClienteServiceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
+        if (clienteDTO.getDireccion() == null) {
+            throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin direccion asignada");
+
         }
-        if(clienteDTO.getEmail().isEmpty())
-        {
-          
-            try {
-                throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin correo asignado");
-            } catch (ClienteConTelefonoCorreoDireccionException ex) {
-                Logger.getLogger(IClienteServiceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-            }
-          
+        if (clienteDTO.getEmail() == null) {
+            throw new ClienteConTelefonoCorreoDireccionException("Se intenta guardar un cliente sin correo asignado");
+
         }
-        
         Cliente cliente = MapperUtils.EntityFromDto(clienteDTO, Cliente.class);
         cliente = clienteRepository.save(cliente);
         return MapperUtils.DtoFromEntity(cliente, ClienteDTO.class);
@@ -79,11 +61,10 @@ public class IClienteServiceImplementation implements IClienteService{
     @Override
     public Optional<ClienteDTO> update(ClienteDTO clienteDto, Long id) {
         if (clienteRepository.findById(id).isPresent()) {
-            
-            
+
             Cliente cliente = MapperUtils.EntityFromDto(clienteDto, Cliente.class);
             cliente = clienteRepository.save(cliente);
-            return Optional.ofNullable(MapperUtils.DtoFromEntity(cliente,ClienteDTO.class));
+            return Optional.ofNullable(MapperUtils.DtoFromEntity(cliente, ClienteDTO.class));
         } else {
             return null;
         }
@@ -91,7 +72,7 @@ public class IClienteServiceImplementation implements IClienteService{
 
     @Override
     public void delete(Long id) {
-       clienteRepository.deleteById(id);
+        clienteRepository.deleteById(id);
     }
-    
+
 }

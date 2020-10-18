@@ -20,7 +20,7 @@ public interface IClienteService {
 
     public Optional<ClienteDTO> findById(Long id);
     
-    public ClienteDTO create(ClienteDTO cliente);
+    public ClienteDTO create(ClienteDTO cliente) throws ClienteConTelefonoCorreoDireccionException;
 
     public Optional<ClienteDTO> update(ClienteDTO cliente, Long id);
     

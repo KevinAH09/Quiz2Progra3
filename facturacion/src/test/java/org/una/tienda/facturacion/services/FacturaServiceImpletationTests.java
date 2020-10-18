@@ -60,7 +60,7 @@ public class FacturaServiceImpletationTests {
         };
     }
 
-    public void initData() throws NoModificarInformacionConEstadoInactivo {
+    public void initData() throws NoModificarInformacionConEstadoInactivo, ClienteConTelefonoCorreoDireccionException  {
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -139,7 +139,7 @@ public class FacturaServiceImpletationTests {
     }
     
      @Test
-    public void seEvitaModificarUnaFacturaConEstadoInactivo() throws NoModificarInformacionConEstadoInactivo{
+    public void seEvitaModificarUnaFacturaConEstadoInactivo() throws NoModificarInformacionConEstadoInactivo, ClienteConTelefonoCorreoDireccionException{
         initData();
         assertThrows(NoModificarInformacionConEstadoInactivo.class,
                 () -> {

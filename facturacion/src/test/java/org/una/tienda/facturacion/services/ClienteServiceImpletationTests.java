@@ -47,13 +47,14 @@ public class ClienteServiceImpletationTests {
     public void initData() {
         clientePrueba = new ClienteDTO() {
             {
-                setNombre("Kevin");
+                setEmail("colo7112012@gmail.com");
+                setNombre("KevinAcuna");
             }
         };
     }
 
     @Test
-    public void sePuedeCrearUnClienteCorrectamente() {
+    public void sePuedeCrearUnClienteCorrectamente()  throws ClienteConTelefonoCorreoDireccionException{
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
 
@@ -69,7 +70,7 @@ public class ClienteServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnClienteCorrectamente() {
+    public void sePuedeModificarUnClienteCorrectamente() throws ClienteConTelefonoCorreoDireccionException {
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
         clienteEjemplo.setDireccion("cliente modificado");
@@ -89,7 +90,7 @@ public class ClienteServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeEliminarUnClienteCorrectamente() {
+    public void sePuedeEliminarUnClienteCorrectamente() throws ClienteConTelefonoCorreoDireccionException {
         clienteEjemplo = clienteService.create(clienteEjemplo);
         clienteService.delete(clienteEjemplo.getId());
         Optional<ClienteDTO> productoEncontrado = clienteService.findById(clienteEjemplo.getId());
@@ -107,6 +108,7 @@ public class ClienteServiceImpletationTests {
         initData();
         assertThrows(ClienteConTelefonoCorreoDireccionException.class,
                 () -> {
+                     System.out.println("org.una.tienda.facturacion.services.ClienteServiceImpletationTests.seEvitaClienteSinTelefonoDireccionCorreo()"+clientePrueba);
                     clienteService.create(clientePrueba);
                 }
         );

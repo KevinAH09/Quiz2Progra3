@@ -74,7 +74,7 @@ public class FacturaDetalleServiceImpletationTests {
     ProductoExistenciaDTO productoExistenciaPrueba;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws ClienteConTelefonoCorreoDireccionException {
 
         clienteEjemplo = new ClienteDTO() {
             {
@@ -130,7 +130,7 @@ public class FacturaDetalleServiceImpletationTests {
 
     }
 
-    public void initData() {
+    public void initData() throws ClienteConTelefonoCorreoDireccionException {
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -235,7 +235,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() {
+    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() throws ClienteConTelefonoCorreoDireccionException {
         initData();
         assertThrows(ProductoConDescuentoMayorAlPermitidoException.class,
                 () -> {
