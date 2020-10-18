@@ -7,12 +7,15 @@ package org.una.tienda.facturacion.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 import org.una.tienda.facturacion.entities.FacturaDetalle;
+import org.una.tienda.facturacion.exceptions.NoCrearFacturaConProductoPrecioCeroException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 import org.una.tienda.facturacion.repositories.FacturaDetalleRepository;
@@ -50,19 +53,23 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
 
     @Override
     @Transactional
-    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException {
+    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException,NoCrearFacturaConProductoPrecioCeroException {
 
         Optional<ProductoPrecioDTO> productoPrecio = productoPrecioService.findById(facturaDetalle.getProductoId().getId());
 
         if (productoPrecio.isEmpty()) {
+            System.out.println("-------------------------------------------------------------- ENTROOOOOOOO" + productoPrecio.get().getPrecioColones());
             return null;
         }
-        System.out.println("--------------------------------------------------------------"+productoPrecio.get().getPrecioColones());
-        
-        if (productoPrecio.get().getPrecioColones() == 0) {
-            throw new ProductoConDescuentoMayorAlPermitidoException("Para que no se facture sobre productos con precio cero");
+        System.out.println("--------------------------------------------------------------" + productoPrecio.get().getPrecioColones());
+        System.out.println("-------------------------------------------------------------- " +Double.valueOf("0.0"));
+
+        if (productoPrecio.get().getPrecioColones()== Double.valueOf("0.0")) {
+
+            throw new NoCrearFacturaConProductoPrecioCeroException("Para que no se facture sobre productos con precio cero");
+
         }
-        
+
         System.out.println(productoPrecio);
         if (facturaDetalle.getDescuentoFinal() > productoPrecio.get().getDescuentoMaximo()) {
             throw new ProductoConDescuentoMayorAlPermitidoException("Se intenta facturar un producto con un descuento mayor al permitido");
