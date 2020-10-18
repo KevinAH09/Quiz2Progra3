@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.exceptions.NoGuardarInformacionFacturaConClienteInactivoException;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionEnFacturaConEstadoInactivoException;
 
 /**
  *
@@ -24,5 +25,5 @@ public interface IFacturaService {
     
     public FacturaDTO create(FacturaDTO factura) throws NoGuardarInformacionFacturaConClienteInactivoException;
 
-    public Optional<FacturaDTO> update(FacturaDTO factura, Long id)throws NoModificarInformacionConEstadoInactivoException;
+    public Optional<FacturaDTO> update(FacturaDTO factura, Long id)throws NoModificarInformacionEnFacturaConEstadoInactivoException;
 }

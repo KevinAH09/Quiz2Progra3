@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.entities.Factura;
 import org.una.tienda.facturacion.exceptions.NoGuardarInformacionFacturaConClienteInactivoException;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionEnFacturaConEstadoInactivoException;
 import org.una.tienda.facturacion.repositories.FacturaRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
 import org.una.tienda.facturacion.utils.MapperUtils;
@@ -73,7 +74,7 @@ public class FacturaServiceImplementation implements IFacturaService {
 
     @Override
     @Transactional
-    public Optional<FacturaDTO> update(FacturaDTO facturadto, Long id) throws NoModificarInformacionConEstadoInactivoException {
+    public Optional<FacturaDTO> update(FacturaDTO facturadto, Long id) throws NoModificarInformacionEnFacturaConEstadoInactivoException {
 
         Optional<FacturaDTO> factura = facturaService.findById(facturadto.getId());
 
@@ -82,7 +83,7 @@ public class FacturaServiceImplementation implements IFacturaService {
         }
         System.out.println(factura);
         if (factura.get().isEstado() == false) {
-            throw new NoModificarInformacionConEstadoInactivoException("Se intenta modificar una factura con un estado inactivo");
+            throw new NoModificarInformacionEnFacturaConEstadoInactivoException("Se intenta modificar una factura con un estado inactivo");
         }
         Factura Factura = MapperUtils.EntityFromDto(facturadto, Factura.class);
         Factura = FacturaRepository.save(Factura);

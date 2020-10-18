@@ -20,7 +20,7 @@ import org.una.tienda.facturacion.entities.ProductoExistencia;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturaConProductoPrecioCeroException;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturasConCantidadCeroException;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturasConProductoInventarioCeroOMenorException;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 import org.una.tienda.facturacion.repositories.FacturaDetalleRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
@@ -96,7 +96,7 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
 
     @Override
     @Transactional
-    public Optional<FacturaDetalleDTO> update(FacturaDetalleDTO facturaDetalle, Long id) throws NoModificarInformacionConEstadoInactivoException {
+    public Optional<FacturaDetalleDTO> update(FacturaDetalleDTO facturaDetalle, Long id) throws NoModificarInformacionFacturaDetalleConEstadoInactivoException {
 
         Optional<FacturaDetalleDTO> factura = facturaDetalleService.findById(facturaDetalle.getId());
 
@@ -105,7 +105,7 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
         }
         System.out.println(factura);
         if (factura.get().isEstado() == false) {
-            throw new NoModificarInformacionConEstadoInactivoException("Se intenta modificar una factura detalle con un estado inactivo");
+            throw new NoModificarInformacionFacturaDetalleConEstadoInactivoException("Se intenta modificar una factura detalle con un estado inactivo");
         }
         FacturaDetalle facturaDetalle1 = MapperUtils.EntityFromDto(facturaDetalle, FacturaDetalle.class);
         facturaDetalle1 = facturaDetalleRepository.save(facturaDetalle1);

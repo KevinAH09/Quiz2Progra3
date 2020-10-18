@@ -9,11 +9,11 @@ package org.una.tienda.facturacion.exceptions;
  *
  * @author cfugu
  */
-public class NoModificarInformacionConEstadoInactivoException extends Exception {
+public class NoModificarInformacionClienteConEstadoInactivoException extends Exception {
 
     private String exception;
     
-    public NoModificarInformacionConEstadoInactivoException(String exception)
+    public NoModificarInformacionClienteConEstadoInactivoException(String exception)
     {
         this.exception=exception;
     }

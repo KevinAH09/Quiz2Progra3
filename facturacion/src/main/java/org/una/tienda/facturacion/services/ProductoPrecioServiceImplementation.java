@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 import org.una.tienda.facturacion.entities.ProductoPrecio;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionProductoPrecioConEstadoInactivoException;
 import org.una.tienda.facturacion.repositories.ProductoPrecioRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
 import org.una.tienda.facturacion.utils.MapperUtils;
@@ -66,7 +66,7 @@ public class ProductoPrecioServiceImplementation implements IProductoPrecioServi
 
     @Override
     @Transactional
-    public Optional<ProductoPrecioDTO> update(ProductoPrecioDTO ProductoPrecio1, Long id) throws NoModificarInformacionConEstadoInactivoException {
+    public Optional<ProductoPrecioDTO> update(ProductoPrecioDTO ProductoPrecio1, Long id) throws NoModificarInformacionProductoPrecioConEstadoInactivoException {
 
         Optional<ProductoPrecioDTO> product = ProductoPrecioService.findById(ProductoPrecio1.getId());
 
@@ -75,7 +75,7 @@ public class ProductoPrecioServiceImplementation implements IProductoPrecioServi
         }
         System.out.println(product);
         if (product.get().isEstado() == false) {
-            throw new NoModificarInformacionConEstadoInactivoException("Se intenta modificar un producto con un estado inactivo");
+            throw new NoModificarInformacionProductoPrecioConEstadoInactivoException("Se intenta modificar un producto con un estado inactivo");
         }
 
         ProductoPrecio ProductoPrecio = MapperUtils.EntityFromDto(ProductoPrecio1, ProductoPrecio.class);

@@ -11,7 +11,7 @@ import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturaConProductoPrecioCeroException;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturasConCantidadCeroException;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturasConProductoInventarioCeroOMenorException;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 
 /**
@@ -25,7 +25,7 @@ public interface IFacturaDetalleService {
     
     public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle)throws ProductoConDescuentoMayorAlPermitidoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException,NoCrearFacturasConProductoInventarioCeroOMenorException;
 
-    public Optional<FacturaDetalleDTO> update(FacturaDetalleDTO facturaDetalle, Long id)throws NoModificarInformacionConEstadoInactivoException;
+    public Optional<FacturaDetalleDTO> update(FacturaDetalleDTO facturaDetalle, Long id)throws NoModificarInformacionFacturaDetalleConEstadoInactivoException;
     
     public void delete(Long id);
     

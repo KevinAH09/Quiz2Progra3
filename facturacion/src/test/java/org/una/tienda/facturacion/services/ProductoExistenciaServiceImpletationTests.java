@@ -17,7 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionProductoExistenciaConEstadoInactivoException;
 
 /**
  *
@@ -55,7 +56,7 @@ public class ProductoExistenciaServiceImpletationTests {
         };
     }
 
-    public void initData() throws NoModificarInformacionConEstadoInactivoException {
+    public void initData() throws NoModificarInformacionProductoExistenciaConEstadoInactivoException {
         productoPrueba = new ProductoDTO() {
             {
                 setDescripcion("Producto De Ejemplo");
@@ -92,7 +93,7 @@ public class ProductoExistenciaServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnProductoExistenciaCorrectamente() throws NoModificarInformacionConEstadoInactivoException {
+    public void sePuedeModificarUnProductoExistenciaCorrectamente() throws NoModificarInformacionProductoExistenciaConEstadoInactivoException {
 
         productoExistenciaEjemplo = productoExistenciaService.create(productoExistenciaEjemplo);
         productoExistenciaEjemplo.setCantidad(39393);
@@ -124,9 +125,9 @@ public class ProductoExistenciaServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaModificarProductoEnExistenciaConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException {
+    public void seEvitaModificarProductoEnExistenciaConEstadoInactivo() throws NoModificarInformacionProductoExistenciaConEstadoInactivoException {
         initData();
-        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+        assertThrows(NoModificarInformacionProductoExistenciaConEstadoInactivoException.class,
                 () -> {
                     productoExistenciaService.update(productoExistenciaPrueba, productoExistenciaPrueba.getId());
                 }

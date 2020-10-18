@@ -13,7 +13,8 @@ import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.entities.Producto;
 import org.una.tienda.facturacion.repositories.ProductoRepository;
 import org.springframework.transaction.annotation.Transactional;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionProductoConEstadoInactivoException;
 import org.una.tienda.facturacion.utils.ConversionLista;
 import org.una.tienda.facturacion.utils.MapperUtils;
 
@@ -66,7 +67,7 @@ public class ProductoServiceImplementation implements IProductoService {
 
     @Override
     @Transactional
-    public Optional<ProductoDTO> update(ProductoDTO Producto, Long id) throws NoModificarInformacionConEstadoInactivoException {
+    public Optional<ProductoDTO> update(ProductoDTO Producto, Long id) throws NoModificarInformacionProductoConEstadoInactivoException {
 
         Optional<ProductoDTO> product = ProductoService.findById(Producto.getId());
 
@@ -75,7 +76,7 @@ public class ProductoServiceImplementation implements IProductoService {
         }
         System.out.println(product);
         if (product.get().isEstado() == false) {
-            throw new NoModificarInformacionConEstadoInactivoException("Se intenta modificar un producto con un estado inactivo");
+            throw new NoModificarInformacionProductoConEstadoInactivoException("Se intenta modificar un producto con un estado inactivo");
         }
         Producto producto = MapperUtils.EntityFromDto(Producto, Producto.class);
         producto = ProductoRepository.save(producto);

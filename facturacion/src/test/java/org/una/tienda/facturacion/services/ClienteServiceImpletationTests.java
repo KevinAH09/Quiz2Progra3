@@ -17,7 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionClienteConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
 
 /**
  *
@@ -54,7 +55,7 @@ public class ClienteServiceImpletationTests {
         };
     }
 
-    public void initData2() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, ClienteConTelefonoCorreoDireccionException {
+    public void initData2() throws NoModificarInformacionClienteConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, ClienteConTelefonoCorreoDireccionException {
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -86,7 +87,7 @@ public class ClienteServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnClienteCorrectamente() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException {
+    public void sePuedeModificarUnClienteCorrectamente() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionClienteConEstadoInactivoException {
 
         clienteEjemplo = clienteService.create(clienteEjemplo);
         clienteEjemplo.setDireccion("cliente modificado");
@@ -120,7 +121,7 @@ public class ClienteServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaClienteSinTelefonoDireccionCorreo() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException {
+    public void seEvitaClienteSinTelefonoDireccionCorreo() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionFacturaDetalleConEstadoInactivoException {
         initData();
         assertThrows(ClienteConTelefonoCorreoDireccionException.class,
                 () -> {
@@ -131,9 +132,9 @@ public class ClienteServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaModificarUnClienteConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
+    public void seEvitaModificarUnClienteConEstadoInactivo() throws NoModificarInformacionClienteConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
         initData2();
-        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+        assertThrows(NoModificarInformacionClienteConEstadoInactivoException.class,
                 () -> {
                     clienteService.update(clientePrueba, clientePrueba.getId());
                 }

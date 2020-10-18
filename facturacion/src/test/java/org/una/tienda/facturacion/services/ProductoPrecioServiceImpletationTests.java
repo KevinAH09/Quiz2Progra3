@@ -17,7 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionProductoPrecioConEstadoInactivoException;
 
 /**
  *
@@ -57,7 +58,7 @@ public class ProductoPrecioServiceImpletationTests {
         };
     }
 
-    public void initData() throws NoModificarInformacionConEstadoInactivoException {
+    public void initData() throws NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoModificarInformacionProductoPrecioConEstadoInactivoException {
         productoPrueba = new ProductoDTO() {
             {
                 setDescripcion("Producto De Ejemplo");
@@ -96,7 +97,7 @@ public class ProductoPrecioServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnProductoPrecioCorrectamente() throws NoModificarInformacionConEstadoInactivoException {
+    public void sePuedeModificarUnProductoPrecioCorrectamente() throws NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoModificarInformacionProductoPrecioConEstadoInactivoException {
 
         productoPrecioEjemplo = productoPrecioService.create(productoPrecioEjemplo);
         productoPrecioEjemplo.setDescuentoPromocional(0);
@@ -130,9 +131,9 @@ public class ProductoPrecioServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaModificarProductoPrecioConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException {
+    public void seEvitaModificarProductoPrecioConEstadoInactivo() throws NoModificarInformacionProductoPrecioConEstadoInactivoException, NoModificarInformacionFacturaDetalleConEstadoInactivoException {
         initData();
-        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+        assertThrows(NoModificarInformacionProductoPrecioConEstadoInactivoException.class,
                 () -> {
                     productoPrecioService.update(productoPrecioPrueba, productoPrecioPrueba.getId());
                 }

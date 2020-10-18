@@ -26,7 +26,8 @@ import org.una.tienda.facturacion.exceptions.NoCrearFacturaConProductoPrecioCero
 import org.una.tienda.facturacion.exceptions.NoCrearFacturasConCantidadCeroException;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturasConProductoInventarioCeroOMenorException;
 import org.una.tienda.facturacion.exceptions.NoGuardarInformacionFacturaConClienteInactivoException;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionEnFacturaConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 
 /**
@@ -171,7 +172,7 @@ public class FacturaDetalleServiceImpletationTests {
 
     }
 
-    public void initData() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException {
+    public void initData() throws NoModificarInformacionFacturaDetalleConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException {
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -235,7 +236,7 @@ public class FacturaDetalleServiceImpletationTests {
         };
         productoPrecioPrueba = productoPrecioService.create(productoPrecioPrueba);
     }
-    public void initDataPrcioCero() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException{
+    public void initDataPrcioCero() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException{
          clientePrecioCero = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -300,7 +301,7 @@ public class FacturaDetalleServiceImpletationTests {
         productoPrecioPrecioCero = productoPrecioService.create(productoPrecioPrecioCero);
     }
     
-    public void initDataCantidadCero() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException{
+    public void initDataCantidadCero() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException{
          clienteCantidadCero = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -366,7 +367,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
     
     
-    public void initDataExistenciaCantidadCeroOMenor() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException{
+    public void initDataExistenciaCantidadCeroOMenor() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException{
          clienteExistenciaCantidadCeroOMenor = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -448,7 +449,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException, NoModificarInformacionConEstadoInactivoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException, NoCrearFacturasConProductoInventarioCeroOMenorException {
+    public void sePuedeModificarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException, NoCrearFacturasConProductoInventarioCeroOMenorException {
 
         facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
         facturaDetalleEjemplo.setCantidad(39393);
@@ -482,7 +483,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException {
+    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() throws NoModificarInformacionFacturaDetalleConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException {
         initData();
         assertThrows(ProductoConDescuentoMayorAlPermitidoException.class,
                 () -> {
@@ -492,17 +493,17 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaModificarUnaFacturaDetalleConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException {
+    public void seEvitaModificarUnaFacturaDetalleConEstadoInactivo() throws NoModificarInformacionFacturaDetalleConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException {
         initData();
-        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+        assertThrows(NoModificarInformacionFacturaDetalleConEstadoInactivoException.class,
                 () -> {
-                    facturaService.update(facturaPrueba, facturaPrueba.getId());
+                    facturaDetalleService.update(facturaDetallePrueba, facturaDetallePrueba.getId());
                 }
         );
     }
     
     @Test
-    public void seEvitaModificarUnaFacturaDetalleConPrecioMayorACero() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException{
+    public void seEvitaModificarUnaFacturaDetalleConPrecioMayorACero() throws NoModificarInformacionFacturaDetalleConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException{
         initDataPrcioCero();
         assertThrows(NoCrearFacturaConProductoPrecioCeroException.class,
                 () -> {
@@ -512,7 +513,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void NoCrearFacturasConCantidadCero() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException{
+    public void NoCrearFacturasConCantidadCero() throws NoModificarInformacionFacturaDetalleConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException{
         initDataCantidadCero();
         assertThrows(NoCrearFacturasConCantidadCeroException.class,
                 () -> {
@@ -522,7 +523,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
     
     @Test
-    public void NoCrearFacturasConProductoInventarioCeroOMenor() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException{
+    public void NoCrearFacturasConProductoInventarioCeroOMenor() throws NoModificarInformacionFacturaDetalleConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException{
         initDataExistenciaCantidadCeroOMenor();
         assertThrows(NoCrearFacturasConProductoInventarioCeroOMenorException.class,
                 () -> {

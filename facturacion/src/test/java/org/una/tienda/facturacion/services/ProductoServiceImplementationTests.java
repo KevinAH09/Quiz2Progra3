@@ -16,7 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionProductoConEstadoInactivoException;
 
 /**
  *
@@ -41,7 +42,7 @@ public class ProductoServiceImplementationTests {
         };
     }
 
-    public void initData() throws NoModificarInformacionConEstadoInactivoException {
+    public void initData() throws NoModificarInformacionProductoConEstadoInactivoException {
         productoPrueba = new ProductoDTO() {
             {
                 setDescripcion("Producto De Ejemplo");
@@ -72,7 +73,7 @@ public class ProductoServiceImplementationTests {
     }
 
     @Test
-    public void sePuedeModificarUnProductoCorrectamente() throws NoModificarInformacionConEstadoInactivoException {
+    public void sePuedeModificarUnProductoCorrectamente() throws NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoModificarInformacionProductoConEstadoInactivoException {
 
         productoEjemplo = productoService.create(productoEjemplo);
         productoEjemplo.setDescripcion("Producto modificado");
@@ -104,9 +105,9 @@ public class ProductoServiceImplementationTests {
     }
 
     @Test
-    public void seEvitaModificarProductoConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException {
+    public void seEvitaModificarProductoConEstadoInactivo() throws NoModificarInformacionProductoConEstadoInactivoException, NoModificarInformacionProductoConEstadoInactivoException, NoModificarInformacionFacturaDetalleConEstadoInactivoException {
         initData();
-        assertThrows(NoModificarInformacionConEstadoInactivoException.class,
+        assertThrows(NoModificarInformacionProductoConEstadoInactivoException.class,
                 () -> {
                     productoService.update(productoPrueba, productoPrueba.getId());
                 }
@@ -117,9 +118,9 @@ public class ProductoServiceImplementationTests {
     public void tearDown() {
         if (productoEjemplo != null) {
             if (productoEjemplo.getId() != null) {
-               productoService.delete(productoEjemplo.getId());
+                productoService.delete(productoEjemplo.getId());
             }
-            
+
             productoEjemplo = null;
         }
 

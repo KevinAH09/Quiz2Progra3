@@ -16,7 +16,8 @@ import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.dtos.ProductoDTO;
 import org.una.tienda.facturacion.entities.Cliente;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionClienteConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 import org.una.tienda.facturacion.repositories.ClienteRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
@@ -69,7 +70,7 @@ public class IClienteServiceImplementation implements IClienteService {
 
     @Override
     @Transactional
-    public Optional<ClienteDTO> update(ClienteDTO cliente1, Long id) throws NoModificarInformacionConEstadoInactivoException {
+    public Optional<ClienteDTO> update(ClienteDTO cliente1, Long id) throws NoModificarInformacionClienteConEstadoInactivoException {
 
         Optional<ClienteDTO> factura = clienteService.findById(cliente1.getId());
 
@@ -78,7 +79,7 @@ public class IClienteServiceImplementation implements IClienteService {
         }
         System.out.println(factura);
         if (factura.get().isEstado() == false) {
-            throw new NoModificarInformacionConEstadoInactivoException("Se intenta modificar una factura detalle con un estado inactivo");
+            throw new NoModificarInformacionClienteConEstadoInactivoException("Se intenta modificar una factura detalle con un estado inactivo");
         }
         Cliente cliente = MapperUtils.EntityFromDto(cliente1, Cliente.class);
         cliente = clienteRepository.save(cliente);

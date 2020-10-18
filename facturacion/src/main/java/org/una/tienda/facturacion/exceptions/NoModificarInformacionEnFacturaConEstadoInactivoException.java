@@ -7,13 +7,13 @@ package org.una.tienda.facturacion.exceptions;
 
 /**
  *
- * @author colo7
+ * @author cfugu
  */
-public class NoGuardarInformacionFacturaConClienteInactivoException extends Exception {
+public class NoModificarInformacionEnFacturaConEstadoInactivoException extends Exception {
 
     private String exception;
 
-    public NoGuardarInformacionFacturaConClienteInactivoException(String exception) {
+    public NoModificarInformacionEnFacturaConEstadoInactivoException(String exception) {
         this.exception = exception;
     }
 

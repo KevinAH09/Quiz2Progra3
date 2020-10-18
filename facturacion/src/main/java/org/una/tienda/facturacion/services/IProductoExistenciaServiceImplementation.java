@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
 import org.una.tienda.facturacion.entities.ProductoExistencia;
-import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionFacturaDetalleConEstadoInactivoException;
+import org.una.tienda.facturacion.exceptions.NoModificarInformacionProductoExistenciaConEstadoInactivoException;
 import org.una.tienda.facturacion.repositories.ProductoExistenciaRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
 import org.una.tienda.facturacion.utils.MapperUtils;
@@ -53,7 +54,7 @@ public class IProductoExistenciaServiceImplementation implements IProductoExiste
 
     @Override
     @Transactional
-    public Optional<ProductoExistenciaDTO> update(ProductoExistenciaDTO ProductoExistencia, Long id) throws NoModificarInformacionConEstadoInactivoException {
+    public Optional<ProductoExistenciaDTO> update(ProductoExistenciaDTO ProductoExistencia, Long id) throws NoModificarInformacionProductoExistenciaConEstadoInactivoException {
 
         Optional<ProductoExistenciaDTO> product = productoExistenciaService.findById(ProductoExistencia.getId());
 
@@ -62,7 +63,7 @@ public class IProductoExistenciaServiceImplementation implements IProductoExiste
         }
         System.out.println(product);
         if (product.get().isEstado() == false) {
-            throw new NoModificarInformacionConEstadoInactivoException("Se intenta modificar un producto con un estado inactivo");
+            throw new NoModificarInformacionProductoExistenciaConEstadoInactivoException("Se intenta modificar un producto con un estado inactivo");
         }
         ProductoExistencia productoExistencia = MapperUtils.EntityFromDto(ProductoExistencia, ProductoExistencia.class);
         productoExistencia = productoExistenciaRepository.save(productoExistencia);
