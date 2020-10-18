@@ -24,6 +24,7 @@ import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturaConProductoPrecioCeroException;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturasConCantidadCeroException;
+import org.una.tienda.facturacion.exceptions.NoCrearFacturasConProductoInventarioCeroOMenorException;
 import org.una.tienda.facturacion.exceptions.NoGuardarInformacionFacturaConClienteInactivoException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
@@ -100,6 +101,18 @@ public class FacturaDetalleServiceImpletationTests {
     ProductoPrecioDTO productoPrecioCantidadCero;
 
     ProductoExistenciaDTO productoExistenciaCantidadCero;
+    
+    FacturaDetalleDTO facturaDetalleExistenciaCantidadCeroOMenor;
+
+    FacturaDTO facturaExistenciaCantidadCeroOMenor;
+
+    ClienteDTO clienteExistenciaCantidadCeroOMenor;
+
+    ProductoDTO productoExistenciaCantidadCeroOMenor;
+
+    ProductoPrecioDTO productoPrecioExistenciaCantidadCeroOMenor;
+
+    ProductoExistenciaDTO productoExistenciaExistenciaCantidadCeroOMenor;
 
     @BeforeEach
     public void setup() throws ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException {
@@ -320,7 +333,7 @@ public class FacturaDetalleServiceImpletationTests {
         productoCantidadCero = productoService.create(productoCantidadCero);
         facturaDetalleCantidadCero= new FacturaDetalleDTO() {
             {
-                setCantidad(200);
+                setCantidad(0);
                 setDescuentoFinal(10);
                 setFacturaId(facturaCantidadCero);
                 setProductoId(productoCantidadCero);
@@ -328,7 +341,7 @@ public class FacturaDetalleServiceImpletationTests {
         };
         facturaDetalleCantidadCero = new FacturaDetalleDTO() {
             {
-                setCantidad(200);
+                setCantidad(0);
                 setDescuentoFinal(10);
                 setFacturaId(facturaCantidadCero);
                 setProductoId(productoCantidadCero);
@@ -337,7 +350,7 @@ public class FacturaDetalleServiceImpletationTests {
         productoExistenciaCantidadCero = new ProductoExistenciaDTO() {
             {
                 setProductosId(productoCantidadCero);
-                setCantidad(0);
+                setCantidad(100);
             }
         };
         productoExistenciaCantidadCero = productoExistenciaService.create(productoExistenciaCantidadCero);
@@ -352,9 +365,74 @@ public class FacturaDetalleServiceImpletationTests {
         productoPrecioCantidadCero = productoPrecioService.create(productoPrecioCantidadCero);
     }
     
+    
+    public void initDataExistenciaCantidadCeroOMenor() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException{
+         clienteExistenciaCantidadCeroOMenor = new ClienteDTO() {
+            {
+                setDireccion("San Antonio");
+                setEmail("colo7112012@gmail.com");
+                setNombre("Kevin");
+                setTelefono("61358010");
+            }
+        };
+        clienteExistenciaCantidadCeroOMenor = clienteService.create(clienteExistenciaCantidadCeroOMenor);
+        facturaExistenciaCantidadCeroOMenor = new FacturaDTO() {
+            {
+                setCaja(21);
+                setDescuentoGeneral(2);
+                setClienteId(clienteExistenciaCantidadCeroOMenor);
+
+            }
+        };
+
+        facturaExistenciaCantidadCeroOMenor = facturaService.create(facturaExistenciaCantidadCeroOMenor);
+        facturaExistenciaCantidadCeroOMenor.setEstado(false);
+        facturaExistenciaCantidadCeroOMenor = facturaService.update(facturaExistenciaCantidadCeroOMenor, facturaExistenciaCantidadCeroOMenor.getId()).get();
+
+        productoExistenciaCantidadCeroOMenor = new ProductoDTO() {
+            {
+                setDescripcion("Producto De Ejemplo");
+                setImpuesto(0.10);
+
+            }
+        };
+        productoExistenciaCantidadCeroOMenor = productoService.create(productoExistenciaCantidadCeroOMenor);
+        facturaDetalleExistenciaCantidadCeroOMenor= new FacturaDetalleDTO() {
+            {
+                setCantidad(200);
+                setDescuentoFinal(10);
+                setFacturaId(facturaExistenciaCantidadCeroOMenor);
+                setProductoId(productoExistenciaCantidadCeroOMenor);
+            }
+        };
+        facturaDetalleExistenciaCantidadCeroOMenor = new FacturaDetalleDTO() {
+            {
+                setCantidad(200);
+                setDescuentoFinal(10);
+                setFacturaId(facturaExistenciaCantidadCeroOMenor);
+                setProductoId(productoExistenciaCantidadCeroOMenor);
+            }
+        };
+        productoExistenciaExistenciaCantidadCeroOMenor = new ProductoExistenciaDTO() {
+            {
+                setProductosId(productoExistenciaCantidadCeroOMenor);
+                setCantidad(0);
+            }
+        };
+        productoExistenciaExistenciaCantidadCeroOMenor = productoExistenciaService.create(productoExistenciaExistenciaCantidadCeroOMenor);
+        productoPrecioExistenciaCantidadCeroOMenor = new ProductoPrecioDTO() {
+            {
+                setProductosId(productoExistenciaCantidadCeroOMenor);
+                setPrecioColones(1000);
+                setDescuentoMaximo(15);
+                setDescuentoPromocional(2);
+            }
+        };
+        productoPrecioExistenciaCantidadCeroOMenor = productoPrecioService.create(productoPrecioExistenciaCantidadCeroOMenor);
+    }
 
     @Test
-    public void sePuedeCrearUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException {
+    public void sePuedeCrearUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException, NoCrearFacturasConProductoInventarioCeroOMenorException {
 
         facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
 
@@ -370,7 +448,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException, NoModificarInformacionConEstadoInactivoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException {
+    public void sePuedeModificarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException, NoModificarInformacionConEstadoInactivoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException, NoCrearFacturasConProductoInventarioCeroOMenorException {
 
         facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
         facturaDetalleEjemplo.setCantidad(39393);
@@ -390,7 +468,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeEliminarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException {
+    public void sePuedeEliminarUnaFacturaDetalleCorrectamente() throws ProductoConDescuentoMayorAlPermitidoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException, NoCrearFacturasConProductoInventarioCeroOMenorException {
         facturaDetalleEjemplo = facturaDetalleService.create(facturaDetalleEjemplo);
         facturaDetalleService.delete(facturaDetalleEjemplo.getId());
         Optional<FacturaDetalleDTO> facturaDetalleEncontrado = facturaDetalleService.findById(facturaDetalleEjemplo.getId());
@@ -439,6 +517,16 @@ public class FacturaDetalleServiceImpletationTests {
         assertThrows(NoCrearFacturasConCantidadCeroException.class,
                 () -> {
                     facturaDetalleService.create(facturaDetalleCantidadCero);
+                }
+        );
+    }
+    
+    @Test
+    public void NoCrearFacturasConProductoInventarioCeroOMenor() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException{
+        initDataExistenciaCantidadCeroOMenor();
+        assertThrows(NoCrearFacturasConProductoInventarioCeroOMenorException.class,
+                () -> {
+                    facturaDetalleService.create(facturaDetalleExistenciaCantidadCeroOMenor);
                 }
         );
     }

@@ -19,6 +19,7 @@ import org.una.tienda.facturacion.entities.FacturaDetalle;
 import org.una.tienda.facturacion.entities.ProductoExistencia;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturaConProductoPrecioCeroException;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturasConCantidadCeroException;
+import org.una.tienda.facturacion.exceptions.NoCrearFacturasConProductoInventarioCeroOMenorException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 import org.una.tienda.facturacion.repositories.FacturaDetalleRepository;
@@ -58,7 +59,7 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
 
     @Override
     @Transactional
-    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException,NoCrearFacturaConProductoPrecioCeroException,NoCrearFacturasConCantidadCeroException {
+    public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException,NoCrearFacturaConProductoPrecioCeroException,NoCrearFacturasConCantidadCeroException, NoCrearFacturasConProductoInventarioCeroOMenorException {
 
         Optional<ProductoPrecioDTO> productoPrecio = productoPrecioService.findById(facturaDetalle.getProductoId().getId());
         
@@ -74,7 +75,12 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
 
         }
         
-        if(productoExistencia.get().getCantidad()==Double.valueOf("0.0"))
+        if(Double.valueOf("0.0") >= productoExistencia.get().getCantidad())
+        {
+            throw new NoCrearFacturasConProductoInventarioCeroOMenorException("Para que no se facture sobre productos con inventario cero o menor");
+        }
+        
+        if(facturaDetalle.getCantidad()==Double.valueOf("0.0"))
         {
              throw new NoCrearFacturasConCantidadCeroException("Para que no se facture sobre productos con cantidad cero");
         }
