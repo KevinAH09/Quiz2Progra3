@@ -32,7 +32,7 @@ public class TipoCambioControllerTest {
         String valorEnColones = "6100";
         String resultadoApi = this.restTemplate.getForObject("http://localhost:" + port + "/tipo-cambio/a-dolares/" + valorEnColones, String.class);
 
-        Assertions.assertEquals(resultadoApi, valorEsperado, "El tipo de cambio no se calcula correctamente");
+        Assertions.assertEquals(resultadoApi, valorEsperado, "El tipo de cambio no se calcula bien");
     }
 
 }
