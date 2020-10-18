@@ -136,7 +136,7 @@ public class ProductoExistenciaServiceImpletationTests {
     @AfterEach
     public void tearDown() {
         if (productoExistenciaEjemplo != null) {
-            if (productoExistenciaEjemplo != null) {
+            if (productoExistenciaEjemplo.getId() != null) {
                 productoExistenciaService.delete(productoExistenciaEjemplo.getId());
             }
             productoExistenciaEjemplo = null;
