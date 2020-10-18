@@ -6,6 +6,8 @@
 package org.una.tienda.facturacion.services;
 
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,6 +68,17 @@ public class FacturaDetalleServiceImpletationTests {
     ProductoPrecioDTO productoPrecioEjemplo;
 
     ProductoExistenciaDTO productoExistenciaEjemplo;
+    FacturaDetalleDTO facturaDetallePruebaEstadoInactivo;
+
+    FacturaDTO facturaPruebaEstadoInactivo;
+
+    ClienteDTO clientePruebaEstadoInactivo;
+
+    ProductoDTO productoPruebaEstadoInactivo;
+
+    ProductoPrecioDTO productoPrecioPruebaEstadoInactivo;
+
+    ProductoExistenciaDTO productoExistenciaPruebaEstadoInactivo;
 
     FacturaDetalleDTO facturaDetallePrueba;
 
@@ -192,8 +205,7 @@ public class FacturaDetalleServiceImpletationTests {
         };
 
         facturaPrueba = facturaService.create(facturaPrueba);
-        facturaPrueba.setEstado(false);
-        facturaPrueba = facturaService.update(facturaPrueba, facturaPrueba.getId()).get();
+       
 
         productoPrueba = new ProductoDTO() {
             {
@@ -203,14 +215,6 @@ public class FacturaDetalleServiceImpletationTests {
             }
         };
         productoPrueba = productoService.create(productoPrueba);
-        facturaDetallePrueba = new FacturaDetalleDTO() {
-            {
-                setCantidad(200);
-                setDescuentoFinal(10);
-                setFacturaId(facturaPrueba);
-                setProductoId(productoPrueba);
-            }
-        };
         facturaDetallePrueba = new FacturaDetalleDTO() {
             {
                 setCantidad(200);
@@ -235,6 +239,66 @@ public class FacturaDetalleServiceImpletationTests {
             }
         };
         productoPrecioPrueba = productoPrecioService.create(productoPrecioPrueba);
+    }
+    public void initDataEstadoInactivo() throws ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException, ProductoConDescuentoMayorAlPermitidoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException, NoCrearFacturasConProductoInventarioCeroOMenorException, NoModificarInformacionFacturaDetalleConEstadoInactivoException{
+         clientePruebaEstadoInactivo= new ClienteDTO() {
+            {
+                setDireccion("San Antonio");
+                setEmail("colo7112012@gmail.com");
+                setNombre("Kevin");
+                setTelefono("61358010");
+            }
+        };
+        clientePruebaEstadoInactivo = clienteService.create(clientePruebaEstadoInactivo);
+        facturaPruebaEstadoInactivo = new FacturaDTO() {
+            {
+                setCaja(21);
+                setDescuentoGeneral(2);
+                setClienteId(clientePruebaEstadoInactivo);
+
+            }
+        };
+
+        facturaPruebaEstadoInactivo = facturaService.create(facturaPruebaEstadoInactivo);
+
+        productoPruebaEstadoInactivo = new ProductoDTO() {
+            {
+                setDescripcion("Producto De Ejemplo");
+                setImpuesto(0.10);
+
+            }
+        };
+        productoPruebaEstadoInactivo = productoService.create(productoPruebaEstadoInactivo);
+        facturaDetallePruebaEstadoInactivo = new FacturaDetalleDTO() {
+            {
+                setCantidad(200);
+                setDescuentoFinal(10);
+                setFacturaId(facturaPruebaEstadoInactivo);
+                setProductoId(productoPruebaEstadoInactivo);
+            }
+        };
+       
+       
+        facturaDetallePruebaEstadoInactivo.setEstado(false);
+        productoExistenciaPruebaEstadoInactivo = new ProductoExistenciaDTO() {
+            {
+                setProductosId(productoPruebaEstadoInactivo);
+                setCantidad(1);
+            }
+        };
+        productoExistenciaPruebaEstadoInactivo = productoExistenciaService.create(productoExistenciaPruebaEstadoInactivo);
+        productoPrecioPruebaEstadoInactivo = new ProductoPrecioDTO() {
+            {
+                setProductosId(productoPruebaEstadoInactivo);
+                setPrecioColones(1000);
+                setDescuentoMaximo(15);
+                setDescuentoPromocional(2);
+            }
+        };
+        productoPrecioPruebaEstadoInactivo = productoPrecioService.create(productoPrecioPruebaEstadoInactivo);
+         facturaDetallePruebaEstadoInactivo = facturaDetalleService.create(facturaDetallePruebaEstadoInactivo);
+         facturaDetallePruebaEstadoInactivo.setEstado(false);
+         facturaDetalleService.update(facturaDetallePruebaEstadoInactivo,facturaDetallePruebaEstadoInactivo.getId());
     }
     public void initDataPrcioCero() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionFacturaDetalleConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException{
          clientePrecioCero = new ClienteDTO() {
@@ -493,11 +557,11 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaModificarUnaFacturaDetalleConEstadoInactivo() throws NoModificarInformacionFacturaDetalleConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException {
-        initData();
+    public void seEvitaModificarUnaFacturaDetalleConEstadoInactivo() throws ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException, NoModificarInformacionEnFacturaConEstadoInactivoException, ProductoConDescuentoMayorAlPermitidoException, NoCrearFacturaConProductoPrecioCeroException, NoCrearFacturasConCantidadCeroException, NoCrearFacturasConProductoInventarioCeroOMenorException, NoModificarInformacionFacturaDetalleConEstadoInactivoException {
+        initDataEstadoInactivo();
         assertThrows(NoModificarInformacionFacturaDetalleConEstadoInactivoException.class,
                 () -> {
-                    facturaDetalleService.update(facturaDetallePrueba, facturaDetallePrueba.getId());
+                    facturaDetalleService.update(facturaDetallePruebaEstadoInactivo, facturaDetallePruebaEstadoInactivo.getId());
                 }
         );
     }

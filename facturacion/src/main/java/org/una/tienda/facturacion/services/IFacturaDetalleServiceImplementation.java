@@ -61,11 +61,12 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
     @Transactional
     public FacturaDetalleDTO create(FacturaDetalleDTO facturaDetalle) throws ProductoConDescuentoMayorAlPermitidoException,NoCrearFacturaConProductoPrecioCeroException,NoCrearFacturasConCantidadCeroException, NoCrearFacturasConProductoInventarioCeroOMenorException {
 
-        Optional<ProductoPrecioDTO> productoPrecio = productoPrecioService.findById(facturaDetalle.getProductoId().getId());
+        Optional<ProductoPrecioDTO> productoPrecio = productoPrecioService.findByProductoId(facturaDetalle.getProductoId().getId());
         
-         Optional<ProductoExistenciaDTO> productoExistencia = productoExistenciaService.findById(facturaDetalle.getProductoId().getId());
-
+         Optional<ProductoExistenciaDTO> productoExistencia = productoExistenciaService.findByProductoId(facturaDetalle.getProductoId().getId());
+System.out.println(productoExistencia);
         if (productoPrecio.isEmpty()) {
+            System.out.println("org.una.tienda.facturacion-CREATE -------------- ES NULOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
             return null;
         }
 
@@ -85,7 +86,7 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
              throw new NoCrearFacturasConCantidadCeroException("Para que no se facture sobre productos con cantidad cero");
         }
 
-        System.out.println(productoPrecio);
+        
         if (facturaDetalle.getDescuentoFinal() > productoPrecio.get().getDescuentoMaximo()) {
             throw new ProductoConDescuentoMayorAlPermitidoException("Se intenta facturar un producto con un descuento mayor al permitido");
         }
@@ -101,6 +102,7 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
         Optional<FacturaDetalleDTO> factura = facturaDetalleService.findById(facturaDetalle.getId());
 
         if (factura.isEmpty()) {
+            System.out.println("org.una.tienda.facturacion -------------- ES NULOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
             return null;
         }
         System.out.println(factura);

@@ -20,6 +20,8 @@ public interface IProductoExistenciaService {
 
     public Optional<ProductoExistenciaDTO> findById(Long id);
     
+    public Optional<ProductoExistenciaDTO> findByProductoId(Long id);
+    
     public ProductoExistenciaDTO create(ProductoExistenciaDTO ProductoExistencia);
 
     public Optional<ProductoExistenciaDTO> update(ProductoExistenciaDTO ProductoExistencia, Long id)throws NoModificarInformacionProductoExistenciaConEstadoInactivoException;

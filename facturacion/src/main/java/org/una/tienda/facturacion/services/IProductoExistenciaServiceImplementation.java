@@ -70,4 +70,9 @@ public class IProductoExistenciaServiceImplementation implements IProductoExiste
         return Optional.ofNullable(MapperUtils.DtoFromEntity(productoExistencia, ProductoExistenciaDTO.class));
 
     }
+
+    @Override
+    public Optional<ProductoExistenciaDTO> findByProductoId(Long id) {
+         return (Optional<ProductoExistenciaDTO>) ConversionLista.oneToDto(productoExistenciaRepository.findByProductoId(id), ProductoExistenciaDTO.class);
+    }
 }

@@ -82,4 +82,9 @@ public class ProductoPrecioServiceImplementation implements IProductoPrecioServi
         ProductoPrecio = ProductoPrecioRepository.save(ProductoPrecio);
         return Optional.ofNullable(MapperUtils.DtoFromEntity(ProductoPrecio, ProductoPrecioDTO.class));
     }
+
+    @Override
+    public Optional<ProductoPrecioDTO> findByProductoId(Long id) {
+      return oneToDto(ProductoPrecioRepository.findByProductoId(id));
+    }
 }

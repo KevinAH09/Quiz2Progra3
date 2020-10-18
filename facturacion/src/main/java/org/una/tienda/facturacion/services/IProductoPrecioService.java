@@ -19,6 +19,8 @@ public interface IProductoPrecioService {
 
     public Optional<ProductoPrecioDTO> findById(Long id);
     
+    public Optional<ProductoPrecioDTO> findByProductoId(Long id);
+    
     public ProductoPrecioDTO create(ProductoPrecioDTO ProductoPrecio);
 
     public Optional<ProductoPrecioDTO> update(ProductoPrecioDTO ProductoPrecio, Long id)throws NoModificarInformacionProductoPrecioConEstadoInactivoException;
