@@ -142,7 +142,9 @@ public class ProductoPrecioServiceImpletationTests {
     @AfterEach
     public void tearDown() {
         if (productoPrecioEjemplo != null) {
-            productoPrecioService.delete(productoPrecioEjemplo.getId());
+            if (productoPrecioEjemplo.getId() != null) {
+                productoPrecioService.delete(productoPrecioEjemplo.getId());
+            }
             productoPrecioEjemplo = null;
         }
 

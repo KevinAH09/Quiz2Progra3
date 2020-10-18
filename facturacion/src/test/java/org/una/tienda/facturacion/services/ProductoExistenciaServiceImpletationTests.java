@@ -56,7 +56,7 @@ public class ProductoExistenciaServiceImpletationTests {
     }
 
     public void initData() throws NoModificarInformacionConEstadoInactivoException {
-         productoPrueba = new ProductoDTO() {
+        productoPrueba = new ProductoDTO() {
             {
                 setDescripcion("Producto De Ejemplo");
                 setImpuesto(0.10);
@@ -136,7 +136,9 @@ public class ProductoExistenciaServiceImpletationTests {
     @AfterEach
     public void tearDown() {
         if (productoExistenciaEjemplo != null) {
-            productoExistenciaService.delete(productoExistenciaEjemplo.getId());
+            if (productoExistenciaEjemplo != null) {
+                productoExistenciaService.delete(productoExistenciaEjemplo.getId());
+            }
             productoExistenciaEjemplo = null;
         }
 
