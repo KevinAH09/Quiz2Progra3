@@ -57,6 +57,12 @@ public class IFacturaDetalleServiceImplementation implements IFacturaDetalleServ
         if (productoPrecio.isEmpty()) {
             return null;
         }
+        System.out.println("--------------------------------------------------------------"+productoPrecio.get().getPrecioColones());
+        
+        if (productoPrecio.get().getPrecioColones() == 0) {
+            throw new ProductoConDescuentoMayorAlPermitidoException("Para que no se facture sobre productos con precio cero");
+        }
+        
         System.out.println(productoPrecio);
         if (facturaDetalle.getDescuentoFinal() > productoPrecio.get().getDescuentoMaximo()) {
             throw new ProductoConDescuentoMayorAlPermitidoException("Se intenta facturar un producto con un descuento mayor al permitido");
