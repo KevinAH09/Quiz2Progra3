@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.entities.Factura;
+import org.una.tienda.facturacion.exceptions.NoGuardarInformacionFacturaConClienteInactivoException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.repositories.FacturaRepository;
 import org.una.tienda.facturacion.utils.ConversionLista;
@@ -52,7 +53,13 @@ public class FacturaServiceImplementation implements IFacturaService {
 
     @Override
     @Transactional
-    public FacturaDTO create(FacturaDTO FacturaDTO) {
+    public FacturaDTO create(FacturaDTO FacturaDTO) throws NoGuardarInformacionFacturaConClienteInactivoException {
+        
+        if (!FacturaDTO.getClienteId().isEstado()) {
+
+            throw new NoGuardarInformacionFacturaConClienteInactivoException("Para que no se guarde informacion de la factura con cliente inactivo");
+
+        }
         Factura factura = MapperUtils.EntityFromDto(FacturaDTO, Factura.class);
         factura = FacturaRepository.save(factura);
         return MapperUtils.DtoFromEntity(factura, FacturaDTO.class);

@@ -19,6 +19,7 @@ import org.una.tienda.facturacion.dtos.ClienteDTO;
 import org.una.tienda.facturacion.dtos.FacturaDTO;
 import org.una.tienda.facturacion.dtos.FacturaDetalleDTO;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
+import org.una.tienda.facturacion.exceptions.NoGuardarInformacionFacturaConClienteInactivoException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 
 /**
@@ -33,9 +34,11 @@ public class FacturaServiceImpletationTests {
 
     FacturaDTO facturaEjemplo;
     FacturaDTO facturaPrueba;
+    FacturaDTO facturaPruebaClienteInactivo;
 
     ClienteDTO clienteEjemplo;
     ClienteDTO clientePrueba;
+    ClienteDTO clientePruebaClienteInactivo;
 
     @Autowired
     private IClienteService clienteService;
@@ -60,7 +63,7 @@ public class FacturaServiceImpletationTests {
         };
     }
 
-    public void initData() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException{
+    public void initData() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException{
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -86,9 +89,36 @@ public class FacturaServiceImpletationTests {
         facturaPrueba = facturaService.update(facturaPrueba, facturaPrueba.getId()).get();
 
     }
+    
+     public void initDataClienteInactivo() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException{
+        clientePruebaClienteInactivo = new ClienteDTO() {
+            {
+                setDireccion("San Antonio");
+                setEmail("colo7112012@gmail.com");
+                setNombre("Kevin");
+                setTelefono("61358010");
+            }
+        };
+        clientePruebaClienteInactivo = clienteService.create(clientePruebaClienteInactivo);
+        clientePruebaClienteInactivo.setEstado(false);
+        clienteService.update(clientePruebaClienteInactivo,clientePruebaClienteInactivo.getId());
+        
+        facturaPruebaClienteInactivo = new FacturaDTO() {
+            {
+                {
+                    setDescuentoGeneral(0);
+                    setCaja(0);
+                    setEstado(false);
+                    setClienteId(clientePruebaClienteInactivo);
+                }
+
+            }
+        };
+
+    }
 
     @Test
-    public void sePuedeCrearUnaFacturaCorrectamente() {
+    public void sePuedeCrearUnaFacturaCorrectamente() throws NoGuardarInformacionFacturaConClienteInactivoException {
 
         facturaEjemplo = facturaService.create(facturaEjemplo);
 
@@ -104,7 +134,7 @@ public class FacturaServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeModificarUnaFacturaCorrectamente() throws NoModificarInformacionConEstadoInactivoException {
+    public void sePuedeModificarUnaFacturaCorrectamente() throws NoModificarInformacionConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException {
 
         facturaEjemplo = facturaService.create(facturaEjemplo);
         facturaEjemplo.setCaja(39393);
@@ -123,7 +153,7 @@ public class FacturaServiceImpletationTests {
     }
 
     @Test
-    public void sePuedeEliminarUnaFacturaCorrectamente() {
+    public void sePuedeEliminarUnaFacturaCorrectamente() throws NoGuardarInformacionFacturaConClienteInactivoException {
         facturaEjemplo = facturaService.create(facturaEjemplo);
         facturaService.delete(facturaEjemplo.getId());
         Optional<FacturaDTO> facturaEncontrado = facturaService.findById(facturaEjemplo.getId());
@@ -137,11 +167,20 @@ public class FacturaServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaModificarUnaFacturaConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
+    public void seEvitaModificarUnaFacturaConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException {
         initData();
         assertThrows(NoModificarInformacionConEstadoInactivoException.class,
                 () -> {
                     facturaService.update(facturaPrueba, facturaPrueba.getId());
+                }
+        );
+    }
+    @Test
+    public void seEvitaGuardarInformacionFacturaConClienteInactivo() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
+        initDataClienteInactivo();
+        assertThrows(NoGuardarInformacionFacturaConClienteInactivoException.class,
+                () -> {
+                    facturaService.create(facturaPruebaClienteInactivo);
                 }
         );
     }

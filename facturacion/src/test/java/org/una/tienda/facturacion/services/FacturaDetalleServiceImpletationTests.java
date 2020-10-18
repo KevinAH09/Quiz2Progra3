@@ -23,6 +23,7 @@ import org.una.tienda.facturacion.dtos.ProductoExistenciaDTO;
 import org.una.tienda.facturacion.dtos.ProductoPrecioDTO;
 import org.una.tienda.facturacion.exceptions.ClienteConTelefonoCorreoDireccionException;
 import org.una.tienda.facturacion.exceptions.NoCrearFacturaConProductoPrecioCeroException;
+import org.una.tienda.facturacion.exceptions.NoGuardarInformacionFacturaConClienteInactivoException;
 import org.una.tienda.facturacion.exceptions.NoModificarInformacionConEstadoInactivoException;
 import org.una.tienda.facturacion.exceptions.ProductoConDescuentoMayorAlPermitidoException;
 
@@ -88,7 +89,7 @@ public class FacturaDetalleServiceImpletationTests {
     ProductoExistenciaDTO productoExistenciaPrecioCero;
 
     @BeforeEach
-    public void setup() throws ClienteConTelefonoCorreoDireccionException {
+    public void setup() throws ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException {
 
         clienteEjemplo = new ClienteDTO() {
             {
@@ -144,7 +145,7 @@ public class FacturaDetalleServiceImpletationTests {
 
     }
 
-    public void initData() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
+    public void initData() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException {
         clientePrueba = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -208,7 +209,7 @@ public class FacturaDetalleServiceImpletationTests {
         };
         productoPrecioPrueba = productoPrecioService.create(productoPrecioPrueba);
     }
-    public void initDataPrcioCero() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException{
+    public void initDataPrcioCero() throws ClienteConTelefonoCorreoDireccionException, NoModificarInformacionConEstadoInactivoException, NoGuardarInformacionFacturaConClienteInactivoException{
          clientePrecioCero = new ClienteDTO() {
             {
                 setDireccion("San Antonio");
@@ -326,7 +327,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
+    public void seEvitaFacturarUnProductoConDescuentoMayorAlPermitido() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException {
         initData();
         assertThrows(ProductoConDescuentoMayorAlPermitidoException.class,
                 () -> {
@@ -336,7 +337,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
 
     @Test
-    public void seEvitaModificarUnaFacturaDetalleConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException {
+    public void seEvitaModificarUnaFacturaDetalleConEstadoInactivo() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException {
         initData();
         assertThrows(NoModificarInformacionConEstadoInactivoException.class,
                 () -> {
@@ -346,7 +347,7 @@ public class FacturaDetalleServiceImpletationTests {
     }
     
     @Test
-    public void seEvitaModificarUnaFacturaDetalleConPrecioMayorACero() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException{
+    public void seEvitaModificarUnaFacturaDetalleConPrecioMayorACero() throws NoModificarInformacionConEstadoInactivoException, ClienteConTelefonoCorreoDireccionException, NoGuardarInformacionFacturaConClienteInactivoException{
         initDataPrcioCero();
         assertThrows(NoCrearFacturaConProductoPrecioCeroException.class,
                 () -> {
