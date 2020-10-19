@@ -102,7 +102,6 @@ System.out.println(productoExistencia);
         Optional<FacturaDetalleDTO> factura = facturaDetalleService.findById(facturaDetalle.getId());
 
         if (factura.isEmpty()) {
-            System.out.println("org.una.tienda.facturacion -------------- ES NULOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
             return null;
         }
         System.out.println(factura);
