@@ -74,7 +74,6 @@ public class ProductoServiceImplementation implements IProductoService {
         if (product.isEmpty()) {
             return null;
         }
-        System.out.println(product);
         if (product.get().isEstado() == false) {
             throw new NoModificarInformacionProductoConEstadoInactivoException("Se intenta modificar un producto con un estado inactivo");
         }

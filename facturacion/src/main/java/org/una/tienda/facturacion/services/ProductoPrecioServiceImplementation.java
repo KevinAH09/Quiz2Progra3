@@ -73,7 +73,6 @@ public class ProductoPrecioServiceImplementation implements IProductoPrecioServi
         if (product.isEmpty()) {
             return null;
         }
-        System.out.println(product);
         if (product.get().isEstado() == false) {
             throw new NoModificarInformacionProductoPrecioConEstadoInactivoException("Se intenta modificar un producto con un estado inactivo");
         }
